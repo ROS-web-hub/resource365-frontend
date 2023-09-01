@@ -1,0 +1,201 @@
+<div class="pt-4">
+  <div class="card">
+    <div class="card-body">
+      <div class="card-title position-relative">
+        <h2 class="text-center">My Bookings</h2>
+        <button
+          class="btn btn-success btn-fill text-white position-absolute top-0 p-2"
+          style="right: 4px"
+          [routerLink]="['/request', 'new']"
+        >
+          <a class="d-flex">
+            <span class="d-none d-sm-block"> New Request </span>
+            <i class="bi bi-plus-lg"></i>
+          </a>
+        </button>
+      </div>
+      <br />
+
+      <div
+        class="toggle-wrapper position-relative d-flex m-auto"
+        (click)="transform()"
+      >
+        <div
+          class="inner-wrapper d-flex justify-content-center"
+          style="width: 100%"
+        >
+          <div
+            class="row align-self-center flex-fill text-center switch-labels"
+          >
+            <div role="button" class="col">
+              <span class="switch-label">Upcoming</span>
+            </div>
+            <div role="button" class="col">
+              <span class="switch-label">History</span>
+            </div>
+          </div>
+        </div>
+        <div
+          id="toggle"
+          class="d-flex align-items-center position-absolute text-center"
+        >
+          <span>Upcoming</span>
+        </div>
+      </div>
+      <br />
+      <div class="timeline-wrapper">
+        <div class="timeline" id="timeline_upcoming">
+          <div [class]="ud.classList" *ngFor="let ud of upcomingData">
+            <ng-container
+              [ngTemplateOutlet]="appointmentCard"
+              [ngTemplateOutletContext]="{ $implicit: ud }"
+            >
+            </ng-container>
+          </div>
+        </div>
+        <div class="timeline d-none" id="timeline_history">
+          <div [class]="hd.classList" *ngFor="let hd of historyData">
+            <ng-container
+              [ngTemplateOutlet]="appointmentCard"
+              [ngTemplateOutletContext]="{ $implicit: hd }"
+            >
+            </ng-container>
+          </div>
+        </div>
+        <button
+          class="btn btn-outline-primary d-block m-auto d-none"
+          id="get_more_history"
+          (click)="getAppointments()"
+        >
+          More +
+        </button>
+        <button
+          class="btn btn-outline-primary d-block m-auto"
+          id="get_more_upcoming"
+          (click)="getAppointments()"
+        >
+          More +
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="viewRequest"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="viewRequestLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body" id="request_view_modal"></div>
+    </div>
+  </div>
+</div>
+
+<ng-template #appointmentCard let-ud>
+  <span *ngIf="ud.showBefore" class="before"></span>
+  <div *ngIf="ud.showDate" class="date">{{ ud.dateText }}</div>
+  <div
+    class="content request-card live-card border m-auto d-block p-3 position-relative mb-2"
+  >
+    <h5 class="text-capitalize d-flex align-items-center">
+      {{
+        ud.extendedProps.request.requestType == 'prerecorded'
+          ? 'REC'
+          : ud.extendedProps.request.requestType == 'cameraman' ? "CAMERA CREW" : ud.extendedProps.request.requestType.toUpperCase()
+      }}<span style="font-size: 10px; font-weight: 700; padding: 0 2px">|</span
+      >{{ ud.interval }}
+    </h5>
+
+    <p>
+      <span>{{
+        ud.extendedProps.request?.requestType == 'prerecorded'
+          ? ud.extendedProps.request?.controlRoom?.name.toUpperCase()
+          : ud.extendedProps.request.channel?.name.toUpperCase()
+      }}</span>
+    </p>
+    <div
+      class="w-100 border-top border-black border-1 my-1"
+      style="border-color: black"
+    ></div>
+    <!-- Request by -->
+    <ng-container
+      *ngIf="!(ud.extendedProps.request.requestType == 'prerecorded')"
+    >
+      <p style="font-size: 14px">
+        Name: <span>{{ ud.extendedProps.request.requestedBy?.name }}</span>
+        <span
+          *ngIf="user.id == ud.extendedProps.request.requestedBy?.id"
+          class="badge bg-warning text-black bg-gradient ms-1 rounded-pill"
+          >you</span
+        >
+      </p>
+      <p style="font-size: 14px">
+        Studio: <span>{{ ud.extendedProps.request.resourceId?.name }}</span>
+      </p>
+    </ng-container>
+
+    <!-- request Channel -->
+
+    <ng-container *ngIf="ud.extendedProps.request.participants">
+      <div class="d-flex flex-column gap-2 my-2">
+        <div
+          *ngFor="let participant of ud.extendedProps.request.participants"
+          class="d-flex align-items-start flex-column"
+        >
+          <p class="text-capitalize" style="font-size: 14px">
+            {{ participant.type }}:
+            <span>{{ participant.name }}</span>
+          </p>
+          <p class="text-capitalize" style="font-size: 14px">
+            Studio:
+            <span>{{ getStudioName(ud, participant) }}</span>
+          </p>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="request-status end-0 m-3 position-absolute top-0">
+      <span
+        class="badge bg-gradient px-3 py-2 rounded-pill"
+        [ngClass]="{
+          'bg-primary': ud.extendedProps.request.status == 'pending',
+          'bg-success': ud.extendedProps.request.status == 'approved',
+          'bg-danger': ud.extendedProps.request.status == 'rejected'
+        }"
+        >{{ ud.extendedProps.request.status }}</span
+      >
+    </div>
+    <p
+      style="
+        font-size: 12px;
+        display: -webkit-box;
+        -webkit-line-clamp: 8;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 30px;
+      "
+    >
+      {{ ud.extendedProps.request.details }}
+    </p>
+    <div
+      class="view-request bg-white rounded-pill bottom-0 end-0 m-3 position-absolute"
+    >
+      <span
+        class="badge rounded"
+        data-id="5aa1c2c95ef7a4e988660011"
+        role="button"
+        (click)="viewRequestDetails(ud._id)"
+      >
+        <i class="bi bi-eye-fill text-black"></i>
+      </span>
+    </div>
+  </div>
+  <span *ngIf="ud.showAfter" class="after"></span>
+</ng-template>

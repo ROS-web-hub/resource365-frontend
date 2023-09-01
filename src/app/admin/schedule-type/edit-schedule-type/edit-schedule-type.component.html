@@ -1,0 +1,26 @@
+<div class="modal-content">
+    <div class="modal-body">
+        <form [formGroup]="editForm" (ngSubmit)="onSubmit()" id="editForm">
+            <div class="d-flex mb-3">
+                <div class="flex-grow-1 bd-highlight">
+                    <label id="edit_record_title" class="fs-3">{{ data?.name }}</label>
+                    <div class="px-2 bd-highlight float-end">
+                        <button class="btn btn-outline-primary">Save</button>
+                    </div>
+                    <div class="px-2 bd-highlight float-end">
+                        <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row g-3">
+                <div class="col-md-12 py-2">
+                    <div class="form-group">
+                        <label for="name" class="form-label fw-bold">Schedule Type Name<span class="required">*</span></label>
+                        <input type="text" name="name" class="form-control" formControlName="name">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

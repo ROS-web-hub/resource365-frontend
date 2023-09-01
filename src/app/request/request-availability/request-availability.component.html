@@ -1,0 +1,145 @@
+<div class="p-3 position-relative">
+  <i *ngIf="!request.isAvailable" class="bi bi-exclamation-lg position-absolute card-icon bg-warning"></i>
+  <i *ngIf="request.isAvailable" class="bi bi-check-lg card-icon position-absolute bg-success text-white"></i>
+  <ng-container *ngIf="!request.isAvailable; else slotavailable">
+    <div class="row">
+      <div class="col-md-5">
+        <h5>{{ request.request.startDateTime | date:'EEEE, MMMM d, y, hh:mm:ss a' }} to {{ request.request.endDateTime | date:'shortTime' }}
+        </h5>
+        <h5>The selected time slot is not available</h5>
+      </div>
+      <div class="col-md-6">
+        <h5>Selected another time slot</h5>
+        <span *ngIf="newTimeSlotAvailable == false" class="mb-2 badge bg-warning bg-opacity-25 text-black border">This timeslot is also not available</span>
+        <div class="p-2 bg-white border-1">
+          <span class="badge bg-warning bg-opacity-25 text-black" *ngIf="!validTimeslot">Invalid time slot</span>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="startDateTime" class="form-label fw-bold">From<span class="text-danger">*</span></label>
+              <ngb-timepicker [(ngModel)]="start" (ngModelChange)="validateTimslots()" [spinners]="false" [meridian]="false">
+              </ngb-timepicker>
+            </div>
+            <div class="col-md-4">
+              <label for="startDateTime" class="form-label fw-bold">To<span class="text-danger">*</span></label>
+              <ngb-timepicker [(ngModel)]="end" (ngModelChange)="validateTimslots()" [spinners]="false" [meridian]="false">
+              </ngb-timepicker>
+            </div>
+            <div class="col-md-4 d-flex justify-content-center">
+              <button class="align-self-center btn btn-sm btn-success text-white" [disabled]="!start || !end"
+                (click)="updateTimeSlot()">Update</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-md-6 col-sm-12">
+        <h4 class="mb-4">Requests</h4>
+        <div *ngFor="let req of request.requests">
+          <ng-container [ngTemplateOutlet]="requestCard" [ngTemplateOutletContext]="{ $implicit: req }">
+          </ng-container>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <h4 class="mb-4">Schedules</h4>
+        <div *ngFor="let sch of request.schedules">
+          <ng-container [ngTemplateOutlet]="scheduleCard" [ngTemplateOutletContext]="{ $implicit: sch }">
+          </ng-container>
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+  <ng-template #slotavailable>
+    <div>
+      <h5>{{ request.request.startDateTime | date:'medium' }} to {{ request.request.endDateTime | date:'shortTime' }}
+        <span *ngIf="request.edited" (click)="resetRequest()" class="badge bg-danger bg-gradient border mx-2 px-3 py-2 cursor-pointer">
+          Reset
+        </span>
+      </h5>
+      <h5>Requested time slot is available</h5>
+    </div>
+  </ng-template>
+
+
+  <ng-template #requestCard let-req>
+    <span *ngIf="req.showBefore" class="before"></span>
+    <div *ngIf="req.showDate" class="date">{{ req.dateText }}</div>
+    <div class="content card bg-main-color live-card m-auto d-block p-3 position-relative mb-2">
+      <h3 class="text-capitalize">{{ req.requestType }}</h3>
+
+      <!-- Request by -->
+      <ng-container *ngIf="req.name">
+        <p>
+          By: <span>{{ req.name }}</span>
+        </p>
+      </ng-container>
+
+      <p>
+        <strong>Date: {{ req.requestDateTime | date }}</strong>
+      </p>
+      <p class="mb-md-2">
+        <strong>From: {{ req.dateRange }}</strong>
+      </p>
+
+      <!-- request Channel -->
+      <ng-container *ngIf="req.channel">
+        <p>
+          Channel:
+          <span>{{ req.channel?.name }}</span>
+        </p>
+      </ng-container>
+
+      <ng-container *ngIf="req.participants">
+        <div *ngFor="let participant of req.participants">
+          <p class="text-capitalize">
+            {{ participant.type }}:
+            <span>{{ participant.name }}</span>
+          </p>
+        </div>
+      </ng-container>
+
+      <p class="mb-md-3 mt-md-2">
+        <strong>{{ req.interval }}</strong>
+      </p>
+      <div class="request-status end-0 m-3 position-absolute top-0">
+        <span class="badge bg-primary bg-gradient px-3 py-2 rounded-pill" *ngIf="req.status == 'pending'">{{
+          req.status
+          }}</span>
+        <span class="badge bg-success bg-gradient px-3 py-2 rounded-pill" *ngIf="req.status == 'approved'">{{
+          req.status
+          }}</span>
+        <span class="badge bg-danger bg-gradient px-3 py-2 rounded-pill" *ngIf="req.status == 'rejected'">{{
+          req.status
+          }}</span>
+      </div>
+      <p>{{ req.details }}</p>
+      <div class="view-request bg-white rounded-pill bottom-0 end-0 m-3 position-absolute">
+        <!-- (click)="viewRequestDetails(req._id)" -->
+        <span class="badge rounded" role="button" (click)="viewRequestDetails(req._id)">
+          <i class="bi bi-eye-fill text-black"></i>
+        </span>
+      </div>
+    </div>
+    <span *ngIf="req.showAfter" class="after"></span>
+  </ng-template>
+
+  <ng-template #scheduleCard let-sch>
+    <div class="bg-main-color card live-card m-auto d-block p-3 rounded position-relative mb-2">
+      <h3 class="text-capitalize">{{ sch.resourceId?.name }}</h3>
+      <strong>Type: <span>{{ sch.type?.name }}</span></strong>
+      <p>
+        By: <span>{{ sch.userId?.name }}</span>
+      </p>
+      <p>
+        <strong>Date: {{ sch.date | date }}</strong>
+      </p>
+      <p class="mb-md-2">
+        <strong>From: {{ sch.dateRange }}</strong>
+      </p>
+      <p>Details: {{ sch.details }}</p>
+    </div>
+  </ng-template>
+  <ngx-spinner [name]="request.id" type="ball-scale-multiple"></ngx-spinner>
+</div>

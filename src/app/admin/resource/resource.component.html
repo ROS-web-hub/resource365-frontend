@@ -1,0 +1,302 @@
+<section>
+  <div class="card">
+    <div class="card-body">
+      <div class="row my-3 px-5 pt-5">
+        <div class="col-12 d-flex justify-content-between">
+          <div class="d-flex justify-content-start align-items-center">
+            <span class="fs-3">Resources</span>
+            <button class="btn float-end" (click)="addRecord()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="green" class="bi bi-plus-square-fill"
+                viewBox="0 0 16 16">
+                <path
+                  d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z" />
+              </svg>
+            </button>
+          </div>
+          <div class="d-flex align-items-center gap-2 justify-content-end">
+            <i class="bi bi-bootstrap-reboot btn rounded-circle text-white" [ngClass]="{
+                'btn-secondary':
+                  allResourceTypesToggles &&
+                  allFilterResourcesToggled &&
+                  allLocationToggles,
+                'btn-primary': !(
+                  allResourceTypesToggles &&
+                  allFilterResourcesToggled &&
+                  allLocationToggles
+                )
+              }" (click)="handleAllFilter()"></i>
+            <button type="button"
+              class="btn btn-secondary btn-fill bg-main-color border-mc text-black d-flex gap-2 px-3"
+              (click)="handleOpenFilterModal()">
+              <span class="d-none d-sm-block"> Filter </span>
+              <i class="bi bi-filter"></i>
+            </button>
+          </div>
+          <!-- <div class="d-flex justify-content-end align-items-center">
+            <span class="fs-3">Resource Type</span>
+            <button class="btn float-end" (click)="addResourceType()">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                fill="green"
+                class="bi bi-plus-square-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"
+                />
+              </svg>
+            </button>
+            <button
+              class="btn float-end btn-primary"
+              style="width: 40px; height: 40px"
+              (click)="linkResourceTypes2RecordingType()"
+            >
+              <i
+                (click)="(editRecord)"
+                class="bi bi-pencil-square bg-primary text-white"
+                style="width: 40px; height: 40px"
+              ></i>
+            </button>
+          </div> -->
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="mtable">
+          <thead class="">
+            <tr>
+              <th scope="col" style="width: 270px">
+                <div class="d-flex" style="padding-left: 50px">Actions</div>
+              </th>
+              <th scope="col">
+                <div>Resource Name</div>
+              </th>
+              <th scope="col">Type</th>
+              <th scope="col">
+                <div class="d-flex" style="padding-right: 50px">Location</div>
+              </th>
+              <th scope="col" style="width: 30%;">Watchers</th>
+            </tr>
+          </thead>
+          <tbody cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListConnectedTo]="connectedDropLists"
+            class="resource-tbody">
+            <tr title="Drag up and down to change order" *ngFor="let row of rows; index as rowIndex" cdkDrag
+              class="cursor-pointer px-5 resource-tr viewBox">
+              <td>
+                <div class="d-flex" style="padding-left: 50px">
+                  <i (click)="viewRecord(row)" class="bi bi-eye bg-info text-white me-1"></i>
+                  <i (click)="editRecord(row)" class="bi bi-pencil-square bg-primary text-white me-1"></i>
+                  <i [ngbTooltip]="toolTipText" class="bi bi-trash3 bg-secondary text-white me-1"
+                    *ngIf="!row.status"></i>
+                  <i (click)="deleteConfirm(row._id)" class="bi bi-trash3 bg-danger text-white me-1"
+                    *ngIf="row.status"></i>
+                </div>
+              </td>
+              <td>
+                <strong>{{ row.name }}</strong>
+              </td>
+              <td>
+                {{ getResourceTypeName(row.type) }}
+              </td>
+              <td>
+                <div class="d-flex" style="padding-right: 50px">
+                  {{ row.location }}
+                </div>
+              </td>
+
+              <td>
+                <div class="text-wrap text-break watchers">
+                  {{
+                  showMoreArr.includes(row._id) ? row?._watchersAllString : row?._watchersSomeString
+                  }}<br />
+                </div>
+                <small (click)="handleShowMoreClick(row._id)" *ngIf="row?._watchersAllString?.length > 30"
+                  class="fw-bold cursor-pointer">
+                  {{
+                  showMoreArr.includes(row._id) ? "Show Less" :
+                  row?.countWatcher == row._watchers.length ? "" : "Show More"
+                  }}
+                </small>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <nav aria-label="Page navigation example" class="mt-3" *ngIf="totalPages > 0">
+        <div class="row">
+          <div class="col">
+            <small class="text-muted">Showing {{ filters.page * filters.limit + 1 }} to
+              {{ filters.page * filters.limit + rows.length }} of
+              {{ totalRecords }} records</small>
+          </div>
+          <div class="col">
+            <ul class="pagination justify-content-end">
+              <li class="page-item" [ngClass]="{ disabled: filters.page === 0 }">
+                <button type="button" class="page-link" (click)="setPage(0)" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </button>
+              </li>
+              <li class="page-item" [ngClass]="{ disabled: filters.page === 0 }">
+                <button type="button" class="page-link" (click)="setPage(filters.page - 1)" aria-label="Previous">
+                  <span aria-hidden="true">&lt;</span>
+                </button>
+              </li>
+              <li class="page-item" *ngFor="let page of pageList" [ngClass]="{ active: filters.page === page }">
+                <button type="button" class="page-link" (click)="setPage(page)">
+                  {{ page + 1 }}
+                </button>
+              </li>
+              <li [ngClass]="{ disabled: filters.page === totalPages - 1 }" class="page-item">
+                <button type="button" class="page-link" (click)="setPage(filters.page + 1)">
+                  <span aria-hidden="true">&gt;</span>
+                </button>
+              </li>
+              <li class="page-item" [ngClass]="{ disabled: filters.page === totalPages - 1 }">
+                <button type="button" class="page-link" (click)="setPage(totalPages)" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</section>
+<ng-template #confirmModalContent let-modal>
+  <div class="modal-body">
+    <h5>Are you sure?</h5>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="deleteRecord()">
+      Delete
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+<ng-template #resourceFilter let-modal3>
+  <div class="modal-body p-5">
+    <h1 class="text-center mt-2 mb-5">Resources Filter</h1>
+    <hr />
+    <h4>Location</h4>
+    <div class="row mx-3 g-3">
+      <div class="col-md-3 col-sm-6 form-check">
+        <input class="form-check-input resource-filter" type="checkbox" value="" id="allResourceTypes"
+          [checked]="allLocationToggles" (click)="toggleAllLocations($event)" />
+        <label class="form-check-label" for="flexCheckDefault"> All </label>
+      </div>
+      <ng-container *ngFor="let r of locations">
+        <div class="col-md-3 col-sm-6 form-check">
+          <input class="form-check-input resource-filter" type="checkbox" value="" id="{{ r._id }}"
+            [checked]="r.checked" (change)="toggleLocation(r, $event)" />
+          <label class="form-check-label" for="flexCheckDefault">
+            {{ r.location !== " " ? r.location : "Blank" }}
+          </label>
+        </div>
+      </ng-container>
+    </div>
+    <hr />
+    <h4>Resource Types</h4>
+    <div class="row mx-3 g-3">
+      <div class="col-md-3 col-sm-6 form-check">
+        <input class="form-check-input resource-filter" type="checkbox" value="" id="allResourceTypes"
+          [checked]="allResourceTypesToggles" (click)="toggleAllResourceTypes($event)" />
+        <label class="form-check-label" for="flexCheckDefault"> All </label>
+      </div>
+      <ng-container *ngFor="let r of resourceTypes">
+        <div class="col-md-3 col-sm-6 form-check">
+          <input class="form-check-input resource-filter" type="checkbox" value="" id="{{ r._id }}"
+            [checked]="r.checked" (change)="toggleResourceTypes(r, $event)" />
+          <label class="form-check-label" for="flexCheckDefault">
+            {{ r.type }}
+          </label>
+        </div>
+      </ng-container>
+    </div>
+    <hr />
+    <h4>Resources</h4>
+    <div class="row mx-3 g-3">
+      <div class="col-sm-12 form-check">
+        <input class="form-check-input resource-filter" type="checkbox" value="" id="all"
+          [checked]="allFilterResourcesToggled" (change)="toggleAllResourceFilter($event)" />
+        <label class="form-check-label" for="flexCheckDefault"> All </label>
+      </div>
+      <ng-container *ngFor="let r of resources">
+        <div class="col-md-4 col-sm-6 form-check">
+          <input class="form-check-input resource-filter" type="checkbox" value="" id="{{ r._id }}"
+            [checked]="r.checked" (change)="toggleResourceFilter(r, $event)" />
+          <label class="form-check-label" for="flexCheckDefault">
+            {{ r.name }}
+          </label>
+        </div>
+      </ng-container>
+    </div>
+    <br />
+    <div class="text-center">
+      <button type="button" class="btn btn-lg btn-outline-secondary mx-2 px-5" (click)="modal3.close()">
+        Cancel
+      </button>
+      <button (click)="handleFilter()" type="button" class="btn btn-lg btn-primary mx-2 px-5">
+        Filter
+      </button>
+    </div>
+  </div>
+  <!-- <div class="modal-footer">
+		<button type="button" class="btn btn-primary me-auto" (click)="filterSaveByResources()">
+		  Filter & Save
+		</button>
+		<button type="button" class="btn btn-secondary" (click)="cancelFilterResource()">
+		  Cancel
+		</button>
+		<button type="button" class="btn btn-primary" (click)="filterSaveByResources()">
+		  Filter
+		</button>
+	  </div> -->
+</ng-template>
+<ng-template #linkFormModal let-modal4>
+  <div class="modal-content">
+    <div class="modal-body">
+      <form [formGroup]="linkForm" (ngSubmit)="onSubmit()" id="newForm">
+        <div class="d-flex mb-3 flex-column gap-2">
+          <div class="flex-grow-1 bd-highlight">
+            <label id="edit_record_title" class="fs-3">Link Recording Type to Resource Types</label>
+          </div>
+          <div class="w-100">
+            <div class="px-2 bd-highlight float-end">
+              <button class="btn btn-outline-primary">Save</button>
+            </div>
+            <div class="px-2 bd-highlight float-end">
+              <button type="button" class="btn btn-outline-secondary" (click)="modal4.close()">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div id="editRecordModalForm" class="row g-3">
+          <div class="col-md-12 py-2">
+            <div class="form-group">
+              <label for="recordingTypes" class="form-label fw-bold">Recording Type<span
+                  class="text-danger">*</span></label>
+              <ng-select [items]="recordingTypes" bindLabel="text" bindValue="_id" formControlName="recordingTypes">
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-12 py-2">
+            <div class="form-group">
+              <label for="resourceTypes" class="form-label fw-bold">Resource Type<span
+                  class="text-danger">*</span></label>
+              <ng-select formControlName="resourceTypes" [multiple]="true">
+                <ng-option *ngFor="let resourceType of resourceTypes" [value]="resourceType._id">{{ resourceType.name
+                  }}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>

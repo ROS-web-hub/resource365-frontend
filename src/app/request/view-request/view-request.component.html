@@ -1,0 +1,403 @@
+<div class="modal-body">
+  <div id="event_details">
+    <div id="request_view" class="p-2">
+      <button class="btn btn-outline-secondary btn-sm float-end" (click)="activeModal.close('Close click')">
+        <i class="bi bi-x-lg d-block d-sm-none"></i>
+        <span class="d-none d-sm-block"> Close </span>
+      </button>
+      <div class="d-flex">
+        <div class="flex-grow-1 bd-highlight">
+          <h2 class="fw-bold" style="text-transform: capitalize">
+            <span>{{
+              request.requestType == "prerecorded"
+              ? "Pre-record"
+              : request.requestType == "cameraman" ? "Camera Crew" : request.requestType
+              }}</span>
+          </h2>
+          <span class="badge bg-gradient px-3 py-2 rounded-pill" [ngClass]="{
+              'bg-danger': request.status == 'rejected',
+              'bg-primary': request.status == 'pending',
+              'bg-success': request.status == 'approved'
+            }">{{ request.status }}</span>
+        </div>
+        <div class="px-2 bd-highlight text-end">
+          <div class="d-flex">
+            <ng-container *ngIf="showActions">
+              <!-- <ng-container *ngIf="!isRejected; else requestRejectedTemplate"> -->
+              <ng-container>
+                <!-- <ng-container *ngIf="!userHasApproved; else userApprovedTemplate"> -->
+                <ng-container *ngIf="!markForReject; else rejectionNote">
+                  <div class="border-end pe-2">
+                    <form [formGroup]="resourcesForm">
+                      <ng-container formArrayName="resources">
+                        <div *ngFor="
+                            let rs of resourceFormArray.controls;
+                            let i = index
+                          ">
+                          <label class="d-flex ms-2 border rounded-3 ps-2 mb-1 p-1 cursor-pointer" [formGroupName]="i"
+                            [ngClass]="{
+                              'btn-success':
+                                resourceFormArray.at(i).get('status')?.value ==
+                                'approved',
+                              'btn-danger':
+                                resourceFormArray.at(i).get('status')?.value ==
+                                'rejected',
+                              'btn-primary': resourceFormArray
+                                .at(i)
+                                .get('checked')?.value
+                            }">
+                            <input type="checkbox" class="me-1" formControlName="checked" [checked]="
+                                resourceFormArray.at(i).get('checked')?.value
+                              " />
+                            {{ resourceFormArray.at(i).get("name")?.value }}
+                          </label>
+                        </div>
+                      </ng-container>
+                    </form>
+                  </div>
+                  <div>
+                    <button (click)="approveRequest(request._id)" type="button" [disabled]="isExpired"
+                      [ngClass]="{'d-none': !approveButtonShow}" class="btn btn-outline-success btn-sm mx-2">
+                      <i class="bi bi-check2 d-block d-sm-none"></i>
+                      <span class="d-none d-sm-block"> Approve </span>
+                    </button>
+                    <button (click)="markRequestForRejction()" type="button" [disabled]="isExpired"
+                      class="btn btn-outline-danger btn-sm mx-2" [ngClass]="{'d-none': !rejectButtonShow}">
+                      <i class="bi bi-x-lg d-block d-sm-none"></i>
+                      <span class="d-none d-sm-block"> Reject </span>
+                    </button>
+                  </div>
+                </ng-container>
+                <ng-template #rejectionNote>
+                  <div class="d-flex">
+                    <input type="text" class="form-control py-0" [(ngModel)]="note" />
+                    <button class="btn btn-outline-danger ms-1 btn-sm" [disabled]="!note.length"
+                      (click)="rejectRequest(request._id)">
+                      <i class="bi bi-x-lg d-block d-sm-none"></i>
+                      <span class="d-none d-sm-block"> Reject </span>
+                    </button>
+                    <button class="btn btn-outline-primary ms-1 btn-sm" (click)="unmarkForRejection()">
+                      <i class="bi bi-x-lg"></i>
+                    </button>
+                  </div>
+                </ng-template>
+                <!-- </ng-container> -->
+                <ng-template #userApprovedTemplate>
+                  <div>
+                    <div class="mb-2">
+                      <span class="badge bg-primary border">
+                        <span *ngIf="approvalType == 'manual'">You {{ userApprovalType }} this request</span>
+                        <span *ngIf="approvalType == 'automatic'">The request is approved automatically, due to in the
+                          time range</span>
+                      </span>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-container>
+              <ng-template #requestRejectedTemplate>
+                <div>
+                  <div>
+                    <span class="badge bg-warning border text-black bg-opacity-25">
+                      This request has been rejected
+                    </span>
+                  </div>
+                  <div class="mb-2">
+                    <span *ngIf="userHasApproved" class="badge bg-primary border">
+                      You {{ userApprovalType }} this request
+                    </span>
+                  </div>
+                </div>
+              </ng-template>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4">
+        <span class="text-secondary">Control Room</span>
+        <h3>{{ request.controlRoom?.name }}</h3>
+      </div>
+      <div class="mt-4">
+        <span class="text-secondary">Studios</span>
+        <h4>{{ request.resourceId?.name }}</h4>
+      </div>
+      <hr />
+      <div class="details">
+        <!-- [START] Request type live -->
+        <div class="row" *ngIf="request.requestType == 'live'">
+          <div class="col-md-6">
+            <div class="row mb-2">
+              <div class="col-4 text-secondary"><strong>Date</strong></div>
+              <div class="col-8 ps-1" id="date-value">
+                {{ request.requestDateTime | date }}
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary">
+                <strong>Timeslot</strong>
+              </div>
+              <div class="col-8 ps-1" id="timeslot">
+                {{ request.timeSlot }}
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary"><strong>Channel</strong></div>
+              <div class="col-8 ps-1">{{ request.channel?.name }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary"><strong>Name</strong></div>
+              <div class="col-8 ps-1">{{ request.name }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary">
+                <strong>Participants</strong>
+              </div>
+              <div class="col-8 ps-1">
+                <ng-container *ngFor="let p of request.participants">
+                  <p>
+                    <strong>Name: </strong>{{ p?.name
+                    }}<strong class="ps-4">Studio: </strong> {{ p?.studio?.name }}
+                  </p>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row mb-2">
+              <div class="col-4 text-secondary">
+                <strong>Requested By</strong>
+              </div>
+              <div class="col-8 ps-1">{{ request.requestedBy?.name }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-12 text-secondary">
+                <strong>Attachment</strong>
+              </div>
+              <div class="col-12">
+                <button *ngIf="request.attachment" (click)="downloadFile(request.attachment)">
+                  <span class="text-success">{{ request.attachment }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12" *ngIf="showDetails">
+            <div class="row mb-2">
+              <div class="col-12 text-secondary">
+                <strong>Details</strong>
+              </div>
+              <div class="text-wrap text-break">
+                {{
+                request.details.length > 15
+                ? showMoreDetail
+                ? request.details
+                : request.details.slice(0, 15) + "..."
+                : request.details
+                }}<br />
+              </div>
+              <small (click)="handleShowMoreClick()" *ngIf="request.details.length > 15" class="fw-bold cursor-pointer">
+                {{ showMoreDetail ? "Show Less" : "Show More" }}
+              </small>
+            </div>
+          </div>
+        </div>
+        <!-- [END] Request type live -->
+
+        <!-- [START] Request type prerecorded -->
+        <div class="row" *ngIf="request.requestType == 'prerecorded'">
+          <div class="col-md-6">
+            <div class="row mb-2">
+              <div class="col-4 text-secondary"><strong>Date</strong></div>
+              <div class="col-8 ps-1" id="date-value">
+                {{ request.requestDateTime | date }}
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary"><strong>Timeslot</strong></div>
+              <div class="col-8 ps-1" id="timeslot">{{ request.timeSlot }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary">
+                <strong>Participants</strong>
+              </div>
+              <div class="col-8 ps-1">
+                <ng-container *ngFor="let p of request.participants">
+                  <p>
+                    <strong>Name: </strong>{{ p?.name
+                    }}<strong class="ps-4">Studio: </strong> {{ p?.studio?.name }}
+                  </p>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row mb-2">
+              <div class="col-4 text-secondary">
+                <strong>Requested By</strong>
+              </div>
+              <div class="col-8 ps-1">{{ request.requestedBy?.name }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-12 text-secondary">
+                <strong>Attachment</strong>
+              </div>
+              <div class="col-12">
+                <a *ngIf="request.attachment" href="{{ serverUrl + '/uploads/' + request.attachment }}" target="_blank">
+                  <span class="text-success">{{ request.attachment }}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12" *ngIf="showDetails">
+            <div class="row mb-2">
+              <div class="col-12 text-secondary"><strong>Details</strong></div>
+              <div class="col-12">{{ request.details }}</div>
+            </div>
+          </div>
+        </div>
+        <!-- [END] Request type prerecorded -->
+
+        <!-- [START] Request type remote -->
+        <div class="row" *ngIf="request.requestType == 'remote'">
+          <div class="col-md-6">
+            <div class="row mb-2">
+              <div class="col-4 text-secondary"><strong>Date</strong></div>
+              <div class="col-8 ps-1" id="date-value">
+                {{ request.requestDateTime | date }}
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary"><strong>Timeslot</strong></div>
+              <div class="col-8 ps-1" id="timeslot">{{ request.timeSlot }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary"><strong>Name</strong></div>
+              <div class="col-8 ps-1">{{ request.name }}</div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="row mb-2">
+              <div class="col-4 text-secondary">
+                <strong>Requested By</strong>
+              </div>
+              <div class="col-8 ps-1">{{ request.requestedBy?.name }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-12 text-secondary">
+                <strong>Attachment</strong>
+              </div>
+              <div class="col-12">
+                <a *ngIf="request.attachment" href="{{ serverUrl + '/uploads/' + request.attachment }}" target="_blank">
+                  <span class="text-success">{{ request.attachment }}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12" *ngIf="showDetails">
+            <div class="row mb-2">
+              <div class="col-12 text-secondary"><strong>Details</strong></div>
+              <div class="col-12">{{ request.details }}</div>
+            </div>
+          </div>
+        </div>
+        <!-- [END] Request type remote -->
+
+        <!-- [START] Request type cameraman -->
+        <div class="row" *ngIf="request.requestType == 'cameraman'">
+          <div class="col-md-6">
+            <div class="row mb-2">
+              <div class="col-4 text-secondary"><strong>Date</strong></div>
+              <div class="col-8 ps-1" id="date-value">
+                {{ request.requestDateTime | date }}
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary"><strong>Timeslot</strong></div>
+              <div class="col-8 ps-1" id="timeslot">{{ request.timeSlot }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary"><strong>Program</strong></div>
+              <div class="col-8 ps-1">{{ request.program }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary">
+                <strong>Resource Type</strong>
+              </div>
+              <div class="col-8 ps-1">{{ request.resourceType }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary">
+                <strong>Shoot Type</strong>
+              </div>
+              <div class="col-8 ps-1">{{ request.shootType.name }}</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row mb-2">
+              <div class="col-4 text-secondary">
+                <strong>Contact Information</strong>
+              </div>
+              <div class="col-8 ps-1">{{ request.contactInformation }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-4 text-secondary">
+                <strong>Requested By</strong>
+              </div>
+              <div class="col-8 ps-1">{{ request.requestedBy?.name }}</div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-12 text-secondary">
+                <strong>Attachment</strong>
+              </div>
+              <div class="col-12">
+                <a *ngIf="request.attachment" href="{{ serverUrl + '/uploads/' + request.attachment }}" target="_blank">
+                  <span class="text-success">{{ request.attachment }}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12" *ngIf="showDetails">
+            <div class="row mb-2">
+              <div class="col-12 text-secondary"><strong>Details</strong></div>
+              <div class="col-12">{{ request.details }}</div>
+            </div>
+          </div>
+        </div>
+        <!-- [END] Request type cameraman -->
+      </div>
+      <!-- Request approvals list -->
+      <div>
+        <hr />
+        <h5>Request approvals status</h5>
+        <div *ngIf="requestApprovals.length">
+          <div class="row mt-1" *ngFor="let ra of requestApprovals">
+            <div class="col-md-2">
+              <span>
+                <strong>{{ ra.name }}</strong>
+                <!-- <i *ngFor="let r of ra.resources" class="bi bi-info-circle ms-1 cursor-pointer" style="font-size: 80%;" placement="end"
+                  [ngbTooltip]="'For ' + r.resourceName +'(' + r.status + ')'"></i> -->
+              </span>
+            </div>
+            <div class="col-md-2">
+              <div *ngFor="let r of ra.resources">
+                <span class="badge bg-warning border text-black bg-opacity-25" *ngIf="r.status == 'rejected'">{{
+                  r.resourceName }}</span>
+                <span class="badge bg-info" *ngIf="r.status == 'pending'">{{
+                  r.resourceName
+                  }}</span>
+                <span class="badge bg-success" *ngIf="r.status == 'approved'">{{
+                  r.resourceName
+                  }}</span>
+              </div>
+            </div>
+            <div class="col-md-4 text-center">
+              {{ ra.approvalTimestamp | date : "medium" }}
+            </div>
+            <div class="col-md-4">
+              {{ ra.note }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

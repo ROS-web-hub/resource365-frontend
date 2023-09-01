@@ -1,0 +1,228 @@
+<section>
+  <div class="card my-4">
+    <div class="card-body">
+      <div class="row justify-content-center">
+        <div class="col-sm-12 my-1">
+          <div class="card text-white bg-primary bg-gradient">
+            <div class="card-body row text-center">
+              <div class="col-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="55"
+                  height="55"
+                  fill="currentColor"
+                  class="bi bi-clipboard-check"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"
+                  />
+                  <path
+                    d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"
+                  />
+                  <path
+                    d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"
+                  />
+                </svg>
+              </div>
+              <div class="col-5 align-self-center">
+                <h4 class="fs-6 m-0">Resources</h4>
+              </div>
+              <div class="col-4 align-self-center">
+                <h4 class="card-text m-0">{{ resources$?.length }}</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body p-5">
+      <div
+        class="d-flex justify-content-between align-items-center text-nowrap"
+      >
+        <h4 class="card-title">Resource Schedules</h4>
+        <!-- {{#if (inArray user.permissions 'CREATE_SCHEDULE') }} -->
+        <a
+          (click)="addRecord()"
+          style="text-decoration: none"
+          class="d-flex justify-content-center align-items-center px-2 py-1 cursor-pointer"
+        >
+          <button
+            class="btn btn-success btn-fill text-white d-flex text-nowrap"
+          >
+            <span class="d-none d-sm-block"> New Schedule </span>
+            <i class="bi bi-plus-lg"></i>
+          </button>
+        </a>
+        <!-- {{/if}} -->
+      </div>
+      <div class="table-responsive-md">
+        <table class="mtable">
+          <thead>
+            <tr>
+              <th scope="col">Actions</th>
+              <th scope="col">Resource</th>
+              <th scope="col">Type</th>
+              <th scope="col">Description</th>
+              <th scope="col">Status</th>
+              <th scope="col">Date</th>
+              <th scope="col">Start Time</th>
+              <th scope="col">End Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of rows; index as rowIndex">
+              <td>
+                <div class="d-flex">
+                  <i
+                    *ngIf="row.status == 'Active'"
+                    (click)="completeScheduleConfirm(row._id)"
+                    class="bi bi-check2 bg-success text-white me-1"
+                  ></i>
+                  <i
+                    *ngIf="!(row.status == 'Active')"
+                    class="bi bi-check2 bg-secondary text-white me-1"
+                  ></i>
+                  <i
+                    (click)="editRecord(row)"
+                    class="bi bi-pencil-square bg-primary text-white me-1"
+                  ></i>
+                  <i
+                    (click)="deleteRecordConfirm(row._id)"
+                    class="bi bi-trash3 bg-danger text-white me-1"
+                  ></i>
+                </div>
+              </td>
+              <td>
+                <strong>{{ row.resourceId?.name }}</strong>
+              </td>
+              <td>{{ row.type?.name }}</td>
+              <td>{{ row.details }}</td>
+              <td>
+                <span *ngIf="row.status == 'Active'" class="badge bg-success">{{
+                  row.status
+                }}</span>
+                <span *ngIf="row.status != 'Active'" class="badge bg-danger">{{
+                  row.status
+                }}</span>
+              </td>
+              <td>{{ moment(row.date).format("DD/MM/YYYY") }}</td>
+              <td>{{ moment(row.startDateTime).format("hh:mm A") }}</td>
+              <td>{{ moment(row.endDateTime).format("hh:mm A") }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <nav
+        aria-label="Page navigation example"
+        class="mt-3"
+        *ngIf="totalPages > 0"
+      >
+        <div class="row">
+          <div class="col">
+            <small class="text-muted"
+              >Showing {{ filters.page * filters.limit + 1 }} to
+              {{ filters.page * filters.limit + rows.length }} of
+              {{ totalRecords }} records</small
+            >
+          </div>
+          <div class="col">
+            <ul class="pagination justify-content-end">
+              <li
+                class="page-item"
+                [ngClass]="{ disabled: filters.page === 0 }"
+              >
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="setPage(0)"
+                  aria-label="Previous"
+                >
+                  <span aria-hidden="true">&laquo;</span>
+                </button>
+              </li>
+              <li
+                class="page-item"
+                [ngClass]="{ disabled: filters.page === 0 }"
+              >
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="setPage(filters.page - 1)"
+                  aria-label="Previous"
+                >
+                  <span aria-hidden="true">&lt;</span>
+                </button>
+              </li>
+              <li
+                class="page-item"
+                *ngFor="let page of pageList"
+                [ngClass]="{ active: filters.page === page }"
+              >
+                <button type="button" class="page-link" (click)="setPage(page)">
+                  {{ page + 1 }}
+                </button>
+              </li>
+              <li
+                [ngClass]="{ disabled: filters.page === totalPages - 1 }"
+                class="page-item"
+              >
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="setPage(filters.page + 1)"
+                >
+                  <span aria-hidden="true">&gt;</span>
+                </button>
+              </li>
+              <li
+                class="page-item"
+                [ngClass]="{ disabled: filters.page === totalPages - 1 }"
+              >
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="setPage(totalPages)"
+                  aria-label="Next"
+                >
+                  <span aria-hidden="true">&raquo;</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</section>
+<ng-template #confirmModalContent let-modal>
+  <div class="modal-body">
+    <h5>Are you sure?</h5>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="deleteRecord()">
+      Delete
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #completeModalContent let-modal>
+  <div class="modal-body">
+    <h5>Are you sure to Complete?</h5>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="completeSchedule()">
+      Complete
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close()">
+      Cancel
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,50 @@
+<section class="vh-100">
+	<div class="container-fluid h-custom">
+		<div class="row d-flex justify-content-center align-items-center h-100">
+			<div class="col-md-9 col-lg-6 col-xl-5">
+			<img src="/assets/images/sky-news.png"
+				class="img-fluid" alt="Sample image">
+			</div>
+			<div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+				<div class="card">
+					<div class="card-body">
+						<form [formGroup]="form" autocomplete="off">
+							<div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+								<p class="lead fw-normal mb-0 me-3">Booking MIS</p>
+								<small class="muted">SkyNews</small>
+							</div>
+		
+							<div class="divider d-flex align-items-center my-4">
+							</div>
+		
+							<!-- Email input -->
+							<div class="form-outline mb-4">
+								<label class="form-label" for="form3Example3">{{'USERNAME' | translate }}</label>
+								<input type="email" id="form3Example3" class="form-control form-control-lg" formControlName="username" placeholder="Enter your username" />
+								<small class="text-danger"
+								*ngIf="showInvalidMsg && form.get('username')?.hasError('required')">{{ 'USER_NAME_REQUIRED' | translate }}</small>
+					
+							</div>
+							
+							<!-- Password input -->
+							<div class="form-outline mb-3">
+								<label class="form-label" for="form3Example4">Password</label>
+								<input type="password" id="form3Example4" class="form-control form-control-lg" formControlName="password" placeholder="Enter your password" />
+								<small class="text-danger"
+								*ngIf="showInvalidMsg && form.get('password')?.hasError('required')">{{ 'PASSWORD_REQUIRED' | translate }}</small>
+					
+							</div>
+		
+							<div class="text-center text-lg-start mt-4 pt-2">
+								<button class="btn btn-primary btn-lg"
+									style="padding-left: 2.5rem; padding-right: 2.5rem;" (click)="submitForm()">{{'LOGIN' | translate}}</button>
+							</div>
+						</form>
+					</div>
+				</div>
+		
+			</div>
+		</div>
+	</div>
+</section>
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>

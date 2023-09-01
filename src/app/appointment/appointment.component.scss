@@ -1,0 +1,262 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+.timeline {
+    position: relative;
+    width: 100%;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 15px 0;
+}
+
+.timeline-wrapper {
+    height: 80vh;
+    overflow-y: scroll;
+}
+
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    background: #f5f5ff;
+    top: 8rem;
+    bottom: 0;
+    left: 50%;
+    margin-left: -1px;
+}
+
+#timeline_upcoming.timeline::after {
+    background: #f5f5ff !important;
+}
+
+#timeline_upcoming .t-container>.after {
+    background: #f5f5ff !important;
+    border: 2px solid #f5f5ff !important;
+}
+
+#timeline_upcoming .t-container>.before {
+    background: #f5f5ff !important;
+}
+
+#timeline_upcoming .t-container .content {
+    background: #f5f5ff !important;
+}
+
+
+.t-container {
+    padding: 23px 120px;
+    position: relative;
+    background: inherit;
+    width: 50%;
+}
+
+.t-container.left {
+    left: 0;
+    padding-right: 146px;
+}
+
+.t-container.right {
+    left: 50%;
+    padding-left: 146px;
+
+}
+
+.t-container>.after {
+    content: '';
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    top: calc(50% - 16px);
+    right: -16px;
+    background: #f5f5ff;
+    border: 2px solid #f5f5ff;
+    border-radius: 16px;
+    z-index: 1;
+}
+
+.t-container.right>.after {
+    left: -16px;
+}
+
+.t-container>.before {
+    content: '';
+    position: absolute;
+    width: 140px;
+    height: 2px;
+    top: calc(50% - 1px);
+    right: 8px;
+    background: #f5f5ff;
+    z-index: 1;
+}
+
+.t-container.right>.before {
+    left: 8px;
+}
+
+.t-container .date {
+    position: absolute;
+    display: inline-block;
+    top: calc(50% - 10px);
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 1;
+}
+
+.t-container.left .date {
+    right: -13rem;
+}
+
+.t-container.right .date {
+    left: -13rem;
+}
+
+.t-container .content {
+    padding: 8px 90px 8px 30px;
+    background: #f5f5ff;
+    position: relative;
+    border-radius: 26px !important;
+}
+
+.t-container.right .content {
+    padding: 30px 30px 30px 90px;
+    border-radius: 4px;
+}
+
+.t-container .content h2 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    font-weight: normal;
+    color: black;
+}
+
+.t-container .content p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 22px;
+    color: #000000;
+}
+
+@media (max-width: 767.98px) {
+    .timeline>.after {
+        left: 90px;
+    }
+
+    .t-container {
+        width: 100%;
+        /* padding-left: 120px;
+        padding-right: 30px; */
+        padding: 0 !important;
+    }
+
+    .t-container.right {
+        left: 0%;
+    }
+
+    .t-container.left>.after,
+    .t-container.right>.after {
+        left: 82px;
+    }
+
+    .t-container.left>.before,
+    .t-container.right>.before {
+        left: 100px;
+        border-color: transparent #f5f5ff transparent transparent;
+    }
+
+    .t-container.left .date,
+    .t-container.right .date {
+        right: auto;
+        left: 15px;
+    }
+
+    .t-container.left .icon,
+    .t-container.right .icon {
+        right: auto;
+        left: 146px;
+    }
+
+    .t-container.left .content,
+    .t-container.right .content {
+        padding: 30px 30px 30px 90px;
+        border-radius: 500px 0 0 500px;
+    }
+
+
+    /* For responsive design */
+    .t-container.left {
+        padding-right: 0 !important;
+    }
+
+    .t-container .before,
+    .t-container .after {
+        display: none !important;
+    }
+
+    .t-container .date {
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin: auto;
+        border-bottom: 1px solid #000;
+        background-color: #01246E;
+        color: white;
+        border-top-right-radius: 26px !important;
+        border-top-left-radius: 26px !important;
+    }
+
+    .date-container .content {
+        padding-top: 1.5rem !important;
+    }
+
+    .date-container .request-status {
+        padding-top: 0.6rem !important;
+    }
+
+    .date-container:not(:first-child) {
+        margin-top: 2rem;
+    }
+}
+
+.toggle-wrapper {
+    width: 304px;
+    height: 44px;
+    background-color: #f5f5ff;
+    border-radius: 33px;
+    padding: 1px;
+
+}
+
+.toggle-wrapper .switch-label {
+    font-weight: 500;
+}
+
+#toggle {
+    width: 150px;
+    height: 40px;
+    top: 1px;
+    border-radius: 33px;
+    background: #01246E;
+    transition: all .4s ease-in-out;
+}
+
+#toggle span {
+    width: 80%;
+    display: block;
+    font-weight: 500;
+    color: white;
+    margin: auto;
+}
+
+#toggle span { opacity: 1; transition: all 0.5s; }
+#toggle span.hide { opacity: 0; }
+
+#toggle.right {
+    transform: translateX(150px);
+}

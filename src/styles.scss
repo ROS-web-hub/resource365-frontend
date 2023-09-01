@@ -1,0 +1,614 @@
+/* You can add global styles to this file, and also import other style files */
+
+$primary: #01246e;
+$success: #1f9653;
+$danger: #a90000;
+
+/* Importing Bootstrap SCSS file. */
+@import "~bootstrap/scss/bootstrap";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css");
+@import url("https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.css");
+
+@import url("https://rsms.me/inter/inter.css");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  margin: 0;
+  --bs-body-font-family: "Inter var";
+  --bs-font-sans-serif: "Inter var";
+  /* font-family: "Inter var experimental", sans-serif; */
+  /* font-family: 'Inter', sans-serif; */
+  background: #f5f5ff !important;
+}
+
+button {
+  border-radius: 0.5rem !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border-radius: 1rem;
+  margin-top: 0.4rem !important;
+}
+
+.bg-m-primary {
+  background-color: #1f9653;
+}
+
+.border-mc {
+  border-color: #f5f5ff;
+}
+
+.box-shadow-1 {
+  box-shadow: 0px 18px 36px -2px #198754;
+}
+
+.card,
+.modal-content {
+  border-radius: 1rem;
+  border: none;
+}
+
+.card-header {
+  border-top-right-radius: 1rem !important;
+  border-top-left-radius: 1rem !important;
+  background-color: #f5f5ff;
+}
+
+.form-control,
+.ng-select .ng-select-container {
+  background: #f5f5ff !important;
+  padding: 1rem;
+  outline: none !important;
+  border: 1px solid #f5f5ff;
+  border-radius: 8px;
+  min-height: 3.5rem;
+  box-shadow: inset 0px 0px 11px -5px rgba(0, 0, 0, 0.1);
+}
+
+.ng-select {
+  caret-color: transparent !important;
+}
+
+.ng-select.ng-select-searchable .ng-select-container .ng-value-container .ng-input {
+  opacity: 0 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  box-shadow: none !important;
+}
+
+.user-avatar {
+  height: 7rem;
+  width: 7rem;
+  z-index: 12;
+  position: absolute;
+  overflow: hidden;
+  right: 0;
+  left: 0;
+  top: -2.5rem;
+  margin: auto;
+  border-radius: 50%;
+  -webkit-box-shadow: 0px 12px 20px 1px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 12px 20px 1px rgb(0 0 0 / 40%);
+}
+
+.ngb-dp-day.ngb-dp-today div {
+  color: white !important;
+  background-color: #01246e !important;
+}
+
+.user-avatar img {
+  height: 100%;
+  width: 100%;
+}
+
+.bg-main-color {
+  background-color: #f5f5ff !important;
+}
+
+.ng-select.ng-dirty.ng-invalid .ng-select-container,
+.form-control.ng-dirty.ng-invalid,
+input.ng-dirty.ng-invalid img {
+  // #f7b2cb
+  // border-color: #f50505 !important;
+  border-color: #a90000 !important;
+  -webkit-transition: border-color 500ms ease-out;
+  -moz-transition: border-color 500ms ease-out;
+  -o-transition: border-color 500ms ease-out;
+  transition: border-color 500ms ease-out;
+}
+
+.card.active {
+  -webkit-box-shadow: 0px 1px 15px 5px rgba(46, 29, 255, 0.65);
+  box-shadow: 0px 1px 15px 5px rgba(46, 29, 255, 0.65);
+}
+
+.btn-round {
+  width: 30px;
+  height: 30px;
+  padding: 6px;
+  border-radius: 25px;
+  font-size: 8px;
+  text-align: center;
+}
+
+/*********************************/
+/* Dashboar CSS                  */
+/*********************************/
+
+.cdk-step-complete {
+  bottom: -6px;
+  left: 2px;
+}
+
+.icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #a90000;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 0px;
+  left: 4px;
+}
+
+.pending .form-check-input:checked {
+  background-color: #01246e !important;
+  border-color: #01246e !important;
+}
+
+.approved .form-check-input:checked {
+  background-color: #1f9653 !important;
+  border-color: #1f9653 !important;
+}
+
+.rejected .form-check-input:checked {
+  background-color: #a90000 !important;
+  border-color: #a90000 !important;
+}
+
+// Make the date labels and actions freez on calendar scroll
+.ec-toolbar {
+  position: absolute !important;
+}
+
+.ec-header {
+  margin-top: 4rem !important;
+}
+
+#ec {
+  overflow: scroll;
+  overflow-y: hidden;
+}
+
+#ec.week-view {
+  .ec.ec-week {
+    width: auto !important;
+  }
+}
+
+.ec.ec-week {
+  min-width: fit-content;
+}
+
+.ec-resource {
+  min-width: 10rem !important;
+}
+
+.ec-week .ec-body .ec-event {
+  overflow-y: hidden;
+  width: 100%;
+  transition: all ease-in-out 0.2s;
+}
+
+.ec-month .ec-event {
+  cursor: pointer;
+  height: 1.5rem;
+  transition: all ease-in-out 0.1s;
+}
+
+.ec-month .ec-event:hover {
+  height: 80px !important;
+  min-width: 100px !important;
+  background-color: white !important;
+  overflow-y: scroll;
+  -webkit-box-shadow: 0px 0px 11px 1px rgba(0, 0, 0, 0.56);
+  box-shadow: 0px 0px 11px 1px rgba(0, 0, 0, 0.56);
+  transition: all ease-in-out 0.1s;
+  z-index: 20;
+  opacity: 1;
+}
+
+.ec-week .ec-body .ec-event:hover {
+  min-height: 250px !important;
+  z-index: 24 !important;
+  min-width: 10rem;
+  border: 1px solid #a90000;
+  -webkit-box-shadow: 0px 0px 11px 1px rgba(0, 0, 0, 0.56);
+  box-shadow: 0px 0px 11px 1px rgba(0, 0, 0, 0.56);
+  transition: all ease-in-out 0.2s;
+}
+
+.ec-toolbar .ec-title {
+  display: inline-block;
+}
+
+.ec-month .ec-event {
+  background-color: unset !important;
+  color: #212529;
+  box-shadow: none;
+  padding-left: 4px;
+}
+
+.dropdown-item:hover {
+  cursor: pointer;
+}
+
+// .ec-week .ec-event {
+//   padding: 14px;
+// }
+
+.ec-day .ec-event {
+  overflow: hidden;
+}
+
+.ec-week .ec-event .ec-event-details {
+  text-align: left;
+  align-self: center;
+  width: 95%;
+}
+
+.ec-week .ec-event .ec-event-details p {
+  margin-bottom: 0px;
+}
+
+.ec-days {
+  border-style: none none dotted;
+}
+
+.ec-day {
+  border-style: none none none dotted;
+}
+
+.ec-dot {
+  height: 5px;
+  width: 5px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+.ec-options {
+  display: inline-block;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+.ec-options div {
+  color: #212529;
+  background-color: rgba(255, 255, 255, 0.555);
+  border: 0.5px solid lightgrey;
+  border-radius: 100%;
+  cursor: pointer;
+  display: inline-block;
+  padding: 3px 6px;
+}
+
+.ec-options div:hover {
+  background-color: rgba(255, 255, 255, 0.886);
+  transition: all 0.1s ease-in-out;
+}
+
+#ec {
+  overflow: scroll;
+  overflow-y: hidden;
+}
+
+#ec .col-first {
+  width: 10rem !important;
+}
+
+#ec .col-second {
+  width: 5rem !important;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+// #ec::-webkit-scrollbar {
+//   display: none;
+// }
+
+/* Hide scrollbar for IE, Edge and Firefox */
+// #ec {
+//   -ms-overflow-style: none;
+//   /* IE and Edge */
+//   scrollbar-width: none;
+//   /* Firefox */
+// }
+
+html,
+body,
+div.surface,
+div.panel {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: #f5f5ff;
+}
+
+div.panel {
+  padding: 15px;
+}
+
+button a,
+button a:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+.row .col {
+  position: relative;
+}
+
+.calendar-options {
+  position: absolute;
+  right: 12px;
+}
+
+.dashboard-filter {
+  position: relative;
+  margin-right: 2rem;
+}
+
+.dashboard-filter .label {
+  margin-left: 2rem;
+}
+
+.square {
+  position: absolute;
+  bottom: 2px;
+  display: inline-block;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.today-date #today {
+  font-size: 20px;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.today-date #today:hover,
+.today-date .d-arrow:hover {
+  background-color: #f2f2f2;
+  transition: all 0.1s ease-in-out;
+}
+
+.today-date .d-arrow {
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.today-date img {
+  width: 14px;
+}
+
+.steps {
+  padding: 0 !important;
+}
+
+.step {
+  &::after {
+    z-index: 0 !important;
+  }
+
+  .step-bullet {
+    z-index: 1 !important;
+    height: 5rem !important;
+    width: 5rem !important;
+    font-size: 1.5rem !important;
+  }
+}
+
+.step.active,
+.step.completed {
+  .step-bullet {
+    background-color: rgb(167, 2, 2) !important;
+    color: white !important;
+  }
+
+  &::after {
+    background-color: rgb(167, 2, 2) !important;
+  }
+}
+
+/******************************************/
+/*            Table Design                */
+/******************************************/
+
+
+.mtable {
+  width: 100%;
+
+  tr {
+    padding: 0 1rem;
+
+    th:first-child,
+    td:first-child {
+      padding-left: 0 !important;
+    }
+
+    th:last-child,
+    td:last-child {
+      padding-right: 0 !important;
+    }
+  }
+
+  th,
+  td {
+    padding: 2rem 1rem;
+  }
+
+  th {
+    color: grey;
+    font-weight: normal;
+  }
+
+  td {
+    border-bottom: 1px solid #f5f5ff;
+    vertical-align: baseline;
+  }
+
+  i.bi {
+    display: inline-block;
+    border-radius: 60px;
+    /* box-shadow: 0 0 2px #888; */
+    padding: 0.4em 0.7em;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      background-color: gray;
+      color: white;
+    }
+
+    &::before {
+      transform: translateY(1px);
+    }
+  }
+}
+
+.page-item {
+  margin-left: 0.5rem;
+
+  .page-link {
+    border-radius: 2px !important;
+    padding: 2px 8px !important;
+    background: #f5f5ff !important;
+    color: #01246e !important;
+  }
+
+  &.active {
+    .page-link {
+      background: #01246e !important;
+      color: white !important;
+    }
+  }
+}
+
+.resource-tbody {
+  td {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+}
+
+
+.resource-tr:hover {
+  background-color: #c2f2fb;
+}
+
+.ec-sidebar {
+  position: absolute;
+  width: 80px;
+  background: white;
+  padding-right: 5px;
+  text-align: center;
+  color: black;
+  // border-left: 1px solid #dadce0;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  // padding-left: 2px;
+}
+
+.ec-header {
+  .ec-sidebar {
+    height: 25px;
+    border-bottom: 1px solid #dadce0;
+    z-index: 1049;
+  }
+}
+
+.ec-week {
+  .ec-days {
+    margin-left: 80px;
+  }
+}
+
+.ec-content {
+  .ec-sidebar {
+    z-index: 1048;
+
+    .ec-sidebar-title {
+      visibility: visible;
+      overflow: visible;
+      text-align: center;
+      // color: black;
+      // background: white;
+      // position: absolute;
+      // width: 75px;
+      // height: 50px;
+      z-index: 1049;
+      // text-align: center;
+    }
+  }
+}
+
+.ec-calendar-empty-date {
+  display: none;
+  position: absolute;
+  color: black;
+  background-color: rgb(220, 218, 148);
+  border: 1px solid black;
+  font-size: 10px;
+  width: 150px;
+  height: fit-content;
+  box-sizing: border-box;
+  padding: 5px 10px;
+}
+
+.ec-events {
+  .ec-event {
+    border-radius: 6px;
+  }
+}
+
+.time_slots {
+  color: black;
+}
+
+.time_slots:hover {
+  color: white;
+}
+
+#calendar_type {
+  color: black;
+}
+
+#calendar_type:hover {
+  color: white;
+}

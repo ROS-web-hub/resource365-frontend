@@ -1,0 +1,561 @@
+<section style="margin-top: 6rem">
+  <div class="card numbers-card my-4">
+    <div class="card-body">
+      <!-- <div class="user-avatar">
+				<div class="image-wrapper" role="button">
+					<img [routerLink]="['/profile']" [src]="imageUrl" alt="">
+				</div>
+			</div> -->
+      <div class="pt-3 position-relative">
+        <h5 class="card-title text-center">My Requests</h5>
+        <div class="row row-cols-1 row-cols-md-3 mt-3 g-4 justify-content-center">
+          <div role="button" class="col col-md-3 col-sm-6">
+            <div id="request_pending" [class.active]="filters.filter.requestStatus === 'pending'"
+              class="card text-white bg-primary bg-gr-primary mb-3 cursor-pointer" style="border-radius: 2rem"
+              (click)="getData('pending')">
+              <div class="card-body row text-center pt-4">
+                <div class="col-6">
+                  <i class="bi bi-clock rounded-circle icon-wrap bg-primary"></i>
+                  <p class="fs-6 mt-1">Pending</p>
+                </div>
+                <div class="col-6 d-flex">
+                  <h1 id="pending-requests-count" class="requests-count">
+                    <strong>{{ summary?.pending || 0 }}</strong>
+                  </h1>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div role="button" class="col col-md-3 col-sm-6">
+            <div id="request_approved" [class.active]="filters.filter.requestStatus === 'approved'"
+              class="card text-white bg-success bg-gr-success mb-3 cursor-pointer" style="border-radius: 2rem"
+              (click)="getData('approved')">
+              <div class="card-body row text-center pt-4">
+                <div class="col-6">
+                  <i class="bi bi-file-earmark-text rounded-circle icon-wrap bg-success"></i>
+                  <p class="fs-6 mt-1">Approved</p>
+                </div>
+                <div class="col-6 d-flex">
+                  <h2 id="approved-requests-count" class="requests-count">
+                    {{ summary?.request || 0 }}
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div role="button" class="col col-md-3 col-sm-6">
+            <div id="request_rejected" [class.active]="filters.filter.requestStatus === 'rejected'"
+              class="card text-white bg-danger bg-gr-danger t mb-3 cursor-pointer" style="border-radius: 2rem"
+              (click)="getData('rejected')">
+              <div class="card-body row text-center pt-4">
+                <div class="col-6">
+                  <i class="bi bi-exclamation-triangle rounded-circle icon-wrap bg-danger"></i>
+                  <p class="fs-6 mt-1">Rejected</p>
+                </div>
+                <div class="col-6 d-flex">
+                  <h2 id="rejected-requests-count" class="requests-count">
+                    {{ summary?.rejected || 0 }}
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body p-5">
+      <div class="d-flex justify-content-between position-relative align-items-center">
+        <h4 class="card-title" id="table-status-title">
+          <strong>
+            <span class="text-capitalize">{{ requestStatusType }}</span>
+            Requests
+          </strong>
+        </h4>
+        <ng-container *ngIf="requestStatusType === 'pending' && isTicked()">
+          <div class="d-flex w-100 z-1 position-absolute align-items-center gap-2 justify-content-center">
+            <button (click)="approveMultiRequestConfirm()"
+              class="d-flex justify-content-center align-items-center px-2 py-1 cursor-pointer text-white bg-success border-0"
+              [ngClass]="{
+                'bg-opacity-75': !getMultiActionBtnStatus(),
+                '': getMultiActionBtnStatus()
+              }" [disabled]="!getMultiActionBtnStatus()">
+              <span class="fs-6 text-white">Approve</span>
+              <span class="text-white fw-bold" style="font-size: 14px"><svg enable-background="new 0 0 50 50"
+                  height="20px" id="Layer_1" version="1.1" viewBox="0 0 50 50" width="20px" xml:space="preserve"
+                  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <rect fill="none" height="20" width="20" />
+                  <line fill="none" stroke="#ffffff" stroke-miterlimit="10" stroke-width="4" x1="9" x2="41" y1="25"
+                    y2="25" />
+                  <line fill="none" stroke="#ffffff" stroke-miterlimit="10" stroke-width="4" x1="25" x2="25" y1="9"
+                    y2="41" />
+                </svg>
+              </span>
+            </button>
+            <button (click)="deleteMultiRequestConfirm()"
+              class="d-flex justify-content-center align-items-center px-2 py-1 cursor-pointer text-white bg-danger border-0"
+              [disabled]="!getMultiActionBtnStatus()" [ngClass]="{
+                'bg-opacity-75': !getMultiActionBtnStatus(),
+                '': getMultiActionBtnStatus()
+              }">
+              <span class="fs-6 text-white">Reject</span>
+              <span class="text-white fw-bold" style="font-size: 14px"><svg enable-background="new 0 0 50 50"
+                  height="20px" id="Layer_1" version="1.1" viewBox="0 0 50 50" width="20px" xml:space="preserve"
+                  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <rect fill="none" height="20" width="20" />
+                  <line fill="none" stroke="#ffffff" stroke-miterlimit="10" stroke-width="4" x1="9" x2="41" y1="25"
+                    y2="25" />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </ng-container>
+        <div class="d-flex gap-2" style="z-index: 10">
+          <div class="d-flex align-items-center gap-2 justify-content-end">
+            <i class="bi bi-bootstrap-reboot btn rounded-circle text-white" [ngClass]="{
+                'btn-primary':
+                  allFilterResourcesToggled ||
+                  allRequestTypesToggles ||
+                  isDateFilter || isAppendingDateApplied,
+                'btn-secondary':
+                  allFilterResourcesToggled &&
+                  allRequestTypesToggles &&
+                  !isDateFilter && !isAppendingDateApplied
+                
+              }" (click)="handleFilter(false)"></i>
+            <button type="button" class="btn btn-secondary btn-fill bg-main-color border-mc text-black d-flex gap-2"
+              (click)="handleOpenFilterModal()">
+              <span class="d-none d-sm-block"> Filter </span>
+              <i class="bi bi-filter"></i>
+            </button>
+          </div>
+          <div class="d-flex gap-2">
+            <i class="bi bi-bootstrap-reboot btn rounded-circle text-white" [ngClass]="{
+                'bg-primary': searchKey.length > 0,
+                'bg-secondary': !(searchKey.length > 0)
+              }" (click)="handleSearchAction(false)" [ngClass]="{
+                'btn-primary': searchKey.length > 0,
+                'btn-secondary': !(searchKey.length > 0)
+              }" (click)="handleSearchAction(false)"></i>
+            <input type="text" class="form-control" style="height: 35px !important; min-height: 35px" id="name"
+              [value]="searchKey" (change)="handleSearchKeyChange($event)" />
+            <button type="button" class="btn btn-success btn-fill bg-success border-mc text-white d-flex gap-2"
+              (click)="handleSearchAction()">
+              <span class="d-none d-sm-block"> Search </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive-md">
+        <table class="mtable">
+          <thead>
+            <tr>
+              <th scope="col">Actions</th>
+              <th scope="col">Type</th>
+              <th scope="col">Resource</th>
+              <th scope="col">By</th>
+              <th scope="col">Details</th>
+              <th scope="col">Status</th>
+              <th scope="col">
+                <div (click)="handleRosourceSort()">
+                  Date<i class="bi bi-arrow-down-up" *ngIf="sortBy === 'none'"></i>
+                  <i class="bi bi-arrow-up" *ngIf="sortBy === 'desc'"></i>
+                  <i class="bi bi-arrow-down" *ngIf="sortBy === 'asc'"></i>
+                </div>
+              </th>
+              <th scope="col">Start Time</th>
+              <th scope="col">End Time</th>
+              <ng-container *ngIf="requestStatusType === 'pending'">
+                <th scope="col">
+                  <input class="form-check-input resource-filter" type="checkbox" id="allcheck"
+                    [checked]="allResourceToggled" (click)="toggleAllResources($event)" />
+                </th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let row of rows; index as rowIndex">
+              <tr>
+                <td>
+                  <div class="d-flex" style="width: 200px">
+                    <ng-container *ngIf="requestStatusType === 'pending'">
+                      <i (click)="approveRequestConfirm(row)" *ngIf="row.isFullyAuthorized"
+                        [ngClass]="{'disabled': !approveEnable}"
+                        class="bi bi-check2 bg-success text-white me-1"></i>
+                      <i class="bi bi-check2 bg-secondary text-white me-1" *ngIf="!row.isFullyAuthorized"
+                        [ngClass]="{'disabled': !approveEnable}"></i>
+                    </ng-container>
+                    <i class="bi bi-eye bg-info text-white me-1" (click)="viewRequest(row._id)"></i>
+                    <i (click)="editRequest(row._id)" class="bi bi-pencil-square bg-primary text-white me-1"></i>
+                    <i (click)="deleteRequestConfirm(row)" *ngIf="userDetails._id == row.requestedBy.id"
+                      class="bi bi-trash3 bg-danger text-white me-1"></i>
+                    <i class="bi bi-trash3 bg-secondary text-white me-1"
+                      *ngIf="!(userDetails._id == row.requestedBy.id)"></i>
+                  </div>
+                </td>
+                <td>
+                  {{
+                  (row.requestType == "prerecorded"
+                  ? "Pre-record"
+                  : row.requestType == "cameraman" ? "camera crew" : row.requestType
+                  )?.toUpperCase()
+                  }}
+                </td>
+                <td>
+                  <strong>{{
+                    row.resourceId?.name || row.controlRoom?.name
+                    }}</strong>
+                </td>
+                <td>{{ row.requestedBy?.name }}</td>
+                <td>
+                  <div class="text-wrap text-break" style="max-width: 300px">
+                    {{
+                    row.details.length > 15
+                    ? showMoreArr.includes(row._id)
+                    ? row.details
+                    : row.details.slice(0, 15) + "..."
+                    : row.details
+                    }}<br />
+                  </div>
+                  <small (click)="handleShowMoreClick(row._id)" *ngIf="row.details.length > 15"
+                    class="fw-bold cursor-pointer">
+                    {{
+                    showMoreArr.includes(row._id) ? "Show Less" : "Show More"
+                    }}
+                  </small>
+                </td>
+                <td>{{ row.status }}</td>
+                <td>
+                  <div *ngIf="isOneDayRequest(row.startDateTime, row.endDateTime)">
+                    {{ moment(row.requestDateTime).format("DD/MM/YYYY") }}
+                  </div>
+                  <div *ngIf="!isOneDayRequest(row.startDateTime, row.endDateTime)">
+                    {{ moment(row.startDateTime).format("DD/MM/YYYY") }}<br />
+                    {{ moment(row.endDateTime).format("DD/MM/YYYY") }}
+                  </div>
+                </td>
+                <td>
+                  <div *ngIf="isOneDayRequest(row.startDateTime, row.endDateTime)">
+                    {{ moment(row.startDateTime).format("hh:mm A") }}
+                  </div>
+                  <div *ngIf="!isOneDayRequest(row.startDateTime, row.endDateTime)">
+                    {{ moment(row.startDateTime).format("hh:mm A") }}<br />
+                    00:00 AM
+                  </div>
+                </td>
+                <td>
+                  <div *ngIf="isOneDayRequest(row.startDateTime, row.endDateTime)">
+                    {{ moment(row.endDateTime).format("hh:mm A") }}
+                  </div>
+                  <div *ngIf="!isOneDayRequest(row.startDateTime, row.endDateTime)">
+                    00:00 AM<br />
+                    {{ moment(row.endDateTime).format("hh:mm A") }}
+                  </div>
+                </td>
+                <ng-container *ngIf="requestStatusType === 'pending'">
+                  <td>
+                    <input class="form-check-input resource-filter" type="checkbox" value="" id="{{ row._id }}"
+                      [checked]="row.checked" [disabled]="!row.isFullyAuthorized"
+                      (change)="toggleResource(row, $event)" />
+                  </td>
+                </ng-container>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+
+      <nav aria-label="Page navigation example" class="mt-3">
+        <div class="row">
+          <div class="col">
+            <small class="text-muted">Showing {{ filters.page * filters.limit }} to
+              {{ filters.page * filters.limit + rows.length }} of
+              {{ totalRecords }} records</small>
+          </div>
+          <div class="col">
+            <ul class="pagination justify-content-end">
+              <li class="page-item" [ngClass]="{ disabled: filters.page === 0 }">
+                <button type="button" class="page-link" (click)="setPage(0)" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </button>
+              </li>
+              <li class="page-item" [ngClass]="{ disabled: filters.page === 0 }">
+                <button type="button" class="page-link" (click)="setPage(filters.page - 1)" aria-label="Previous">
+                  <span aria-hidden="true">&lt;</span>
+                </button>
+              </li>
+              <ng-container *ngFor="let page of pageList; let i = index">
+                <li class="page-item" *ngIf="
+                    i == 0 ||
+                    i == 1 ||
+                    filters.page - 1 == i ||
+                    filters.page == i ||
+                    i == filters.page + 1 ||
+                    i == pageList.length - 2 ||
+                    i == pageList.length - 1
+                  " [ngClass]="{ active: filters.page === page }">
+                  <button type="button" class="page-link" (click)="setPage(page)">
+                    {{ page + 1 }}
+                  </button>
+                </li>
+              </ng-container>
+              <li [ngClass]="{ disabled: filters.page === totalPages - 1 }" class="page-item">
+                <button type="button" class="page-link" (click)="setPage(filters.page + 1)">
+                  <span aria-hidden="true">&gt;</span>
+                </button>
+              </li>
+              <li class="page-item" [ngClass]="{ disabled: filters.page === totalPages - 1 }">
+                <button type="button" class="page-link" (click)="setPage(totalPages - 1)" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</section>
+<ng-template #confirmModalContent let-modal>
+  <div class="modal-body">
+    <h5>Are you sure?</h5>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="deleteRequest()">
+      Delete
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+<ng-template #approveConfirmModalContent let-modal5>
+  <div class="modal-body">
+    <h5>Are you sure?</h5>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success text-white" (click)="approveRequest()">
+      Approve
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal5.close()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+<ng-template #multiDeleteConfirmModalContent let-modal1>
+  <div class="modal-body">
+    <h5>Are you sure?</h5>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="deleteMultiRequest()">
+      Reject
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal1.close()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+<ng-template #multiApproveConfirmModalContent let-modal2>
+  <div class="modal-body">
+    <h5>Are you sure?</h5>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success text-white" (click)="approveMultiRequest()">
+      Approve
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal2.close()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #homeFilter let-modal3>
+  <div class="modal-body p-5">
+    <h1 class="text-center mt-2 mb-5">Approvals Filter</h1>
+    <hr />
+    <h4>Request Types</h4>
+    <div *ngIf="rows">
+      <div class="row mx-3 g-3">
+        <div class="col-md-3 col-sm-6 form-check">
+          <input class="form-check-input resource-filter" type="checkbox" value="" id="allRequestTypes"
+            [checked]="allRequestTypesToggles" (click)="toggleAllRequestTypes($event)" />
+          <label class="form-check-label" for="flexCheckDefault"> All </label>
+        </div>
+        <ng-container *ngFor="let r of requestTypes">
+          <div class="col-md-3 col-sm-6 form-check">
+            <input class="form-check-input resource-filter" type="checkbox" value="" id="{{ r.value }}"
+              [checked]="r.checked" (change)="toggleRequestTypes(r, $event)" />
+            <label class="form-check-label" for="flexCheckDefault">
+              {{ r.label }}
+            </label>
+          </div>
+        </ng-container>
+      </div>
+      <hr />
+      <h4>Request Status</h4>
+      <div class="row mx-3 g-3">
+        <div class="col-md-12">
+          <nav id="request_types">
+            <div class="nav justify-content-between align-items-center" id="nav-tab" role="tablist">
+              <div class="form-check form-check-inline d-flex active" data-toggle="form">
+                <input type="radio" class="form-check-input fs-4" id="pending" value="pending" name="requestStatusType"
+                  [(ngModel)]="selectedRequestStatusType" (ngModelChange)="changeRequestStatusType($event)" />
+                <span class="align-self-end px-3">Pending</span>
+              </div>
+              <div class="form-check form-check-inline d-flex" data-toggle="form">
+                <input type="radio" class="form-check-input fs-4" id="approved" value="approved"
+                  name="requestStatusType" [(ngModel)]="selectedRequestStatusType"
+                  (ngModelChange)="changeRequestStatusType($event)" />
+                <span class="align-self-end px-3">Approved</span>
+              </div>
+              <div class="form-check form-check-inline d-flex" data-toggle="form">
+                <input type="radio" class="form-check-input fs-4" id="rejected" value="rejected"
+                  name="requestStatusType" [(ngModel)]="selectedRequestStatusType"
+                  (ngModelChange)="changeRequestStatusType($event)" />
+                <span class="align-self-end px-3">Rejected</span>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+      <hr />
+
+      <div class="d-flex justify-content-start align-items-center gap-2 mb-3">
+        <div class="d-flex w-100 h-100 justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-2">
+            <input class="form-check-input resource-filter" type="checkbox" value="" id="datefilter"
+              [checked]="isAppendingHistoryData" (change)="handleToogleAppendingHistoryData($event)"
+              (ngModelChange)="handleAppendHistoryDataModleChange()" />
+            <h4 class="m-0">Appending History Data</h4>
+            <h6 *ngIf="isAppendingDateApplied" class="btn btn-success text-white">
+              Applied
+            </h6>
+          </div>
+          <button class="btn text-white" (click)="handleAppendingDataApply()" [ngClass]="{
+              'btn-primary': latestRound > 0,
+              'btn-secondary': !(latestRound > 0)
+            }">
+            Apply
+          </button>
+        </div>
+      </div>
+      <ng-container *ngIf="isAppendingHistoryData">
+        <div class="w-100">
+          <label for="requestDateTime" class="form-label fw-bold">Day(s)
+          </label>
+          <div>
+            <div class="form-group">
+              <input class="form-control" placeholder="Input the round of latest days" name="latest" type="number"
+                min="1" [(ngModel)]="latestRound" (ngModelChange)="handleLatestDayRoundChange($event)" />
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <hr />
+      <div class="d-flex justify-content-start align-items-center gap-2 mb-3">
+        <div class="d-flex h-100 align-items-center">
+          <input class="form-check-input resource-filter" type="checkbox" value="" id="datefilter"
+            [checked]="isDateFilter" (change)="toggleDateFilter($event)" (ngModelChange)="handleDateFilterChange()" />
+        </div>
+        <h4 class="m-0">Time</h4>
+      </div>
+      <ng-container *ngIf="isDateFilter">
+        <div class="row g-3">
+          <div class="d-flex mx-3">
+            <div class="form-check form-check-inline d-flex active w-50" data-toggle="form">
+              <input type="radio" class="form-check-input fs-4" id="daily" value="daily" name="selectedTimeRangeType"
+                [(ngModel)]="selectedTimeRangeType" (ngModelChange)="changeTimeRangeType($event)" />
+              <span class="align-self-end px-3">Daily</span>
+            </div>
+            <div class="form-check form-check-inline d-flex w-50" data-toggle="form">
+              <input type="radio" class="form-check-input fs-4" id="weekly" value="weekly" name="selectedTimeRangeType"
+                [(ngModel)]="selectedTimeRangeType" (ngModelChange)="changeTimeRangeType($event)" />
+              <span class="align-self-end px-3">Weekly</span>
+            </div>
+          </div>
+          <div class="d-flex gap-2 justify-content-start align-items-center">
+            <ng-container *ngIf="selectedTimeRangeType === 'daily'">
+              <div class="w-100">
+                <label for="requestDateTime" class="form-label fw-bold">Date
+                </label>
+                <div>
+                  <div class="form-group">
+                    <input class="form-control" placeholder="yyyy-mm-dd" name="dp2" ngbDatepicker #d2="ngbDatepicker"
+                      [markDisabled]="isDisabled" (click)="d2.toggle()" autocomplete="off" [(ngModel)]="dateFilterModel"
+                      (ngModelChange)="handleDateChange($event)" />
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="selectedTimeRangeType === 'weekly'">
+              <div class="flex-grow-1">
+                <label for="requestDateTime" class="form-label fw-bold">Start Date
+                </label>
+                <div>
+                  <div class="form-group">
+                    <input class="form-control" placeholder="yyyy-mm-dd" name="dp3" ngbDatepicker #d3="ngbDatepicker"
+                      [markDisabled]="isDisabled" (click)="d3.toggle()" autocomplete="off"
+                      [(ngModel)]="startFilterDateModel" (ngModelChange)="handleStartFilterDateChange()" />
+                  </div>
+                </div>
+              </div>
+              <div class="flex-grow-1">
+                <label for="requestDateTime" class="form-label fw-bold">End Date
+                </label>
+                <div>
+                  <div class="form-group">
+                    <input class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker [disabled]="true"
+                      autocomplete="off" [(ngModel)]="endFilterDateModel" />
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+      <hr />
+      <h4>Resources</h4>
+      <div class="row mx-3 g-3">
+        <div class="col-sm-12 form-check">
+          <input class="form-check-input resource-filter" type="checkbox" value="" id="all"
+            [checked]="allFilterResourcesToggled" (change)="toggleAllResourceFilter($event)" />
+          <label class="form-check-label" for="flexCheckDefault"> All </label>
+        </div>
+        <ng-container *ngFor="let r of resources">
+          <div class="col-md-4 col-sm-6 form-check">
+            <input class="form-check-input resource-filter" type="checkbox" value="" id="{{ r._id }}"
+              [checked]="r.checked" (change)="toggleResourceFilter(r, $event)" />
+            <label class="form-check-label" for="flexCheckDefault">
+              {{ r.name }}
+            </label>
+          </div>
+        </ng-container>
+      </div>
+      <br />
+      <div class="text-center">
+        <button type="button" class="btn btn-lg btn-outline-secondary mx-2 px-5" (click)="modal3.close()">
+          Cancel
+        </button>
+        <button (click)="handleFilter()" type="button" class="btn btn-lg mx-2 px-5" [ngClass]="{
+            'btn-primary': filterBtnVisibility,
+            'btn-secondary': !filterBtnVisibility
+          }" [disabled]="!filterBtnVisibility">
+          Filter
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="modal-footer">
+	  <button type="button" class="btn btn-primary me-auto" (click)="filterSaveByResources()">
+		Filter & Save
+	  </button>
+	  <button type="button" class="btn btn-secondary" (click)="cancelFilterResource()">
+		Cancel
+	  </button>
+	  <button type="button" class="btn btn-primary" (click)="filterSaveByResources()">
+		Filter
+	  </button>
+	</div> -->
+</ng-template>

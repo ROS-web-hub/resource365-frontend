@@ -1,0 +1,208 @@
+<div class="modal-content">
+  <div class="modal-body">
+    <form [formGroup]="editForm" (ngSubmit)="onSubmit()" id="editForm">
+      <div class="d-flex mb-3">
+        <div class="flex-grow-1 bd-highlight">
+          <label id="edit_record_title" class="fs-3">Edit schedule</label>
+          <div class="px-2 bd-highlight float-end">
+            <button class="btn btn-primary" [disabled]="!editForm.valid">Update</button>
+          </div>
+          <div class="px-2 bd-highlight float-end">
+            <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="row" class="row g-3">
+        <div class="col-md-6 py-2">
+          <div class="form-group">
+            <label for="resourceId" class="form-label fw-bold">Resource<span class="required">*</span></label>
+            <ng-select [items]="resources$" bindLabel="name" bindValue="_id" formControlName="resourceId">
+            </ng-select>
+            <small class="text-danger" *ngIf="
+                showInvalidMsg &&
+                editForm.get('resourceId')?.hasError('required')
+              ">Resource is required</small>
+          </div>
+        </div>
+        <div class="col-md-6 py-2">
+          <div class="form-group">
+            <label for="type" class="form-label fw-bold">Type<span class="required">*</span></label>
+            <ng-container *ngIf="!newScheduleType; else nResource">
+              <!-- <span class="text-decoration-underline cursor-pointer float-end margin-auto"
+                (click)="addNewScheduleType()">Add new</span> -->
+              <ng-select [items]="scheduleTypes$ | async" bindLabel="name" bindValue="_id" formControlName="type">
+              </ng-select>
+            </ng-container>
+            <ng-template #nResource>
+              <span class="text-decoration-underline cursor-pointer float-end margin-auto"
+                (click)="addNewScheduleType()">Choose from list</span>
+              <input type="text" name="details" id="details" class="form-control" formControlName="type" required />
+            </ng-template>
+          </div>
+        </div>
+        <div class="col-md-12 py-2">
+          <div class="form-group">
+            <label for="details" class="fw-bold">Details<span class="required">*</span></label>
+            <input type="text" name="details" id="details" class="form-control" formControlName="details" required />
+            <small class="text-danger" *ngIf="
+                showInvalidMsg && editForm.get('details')?.hasError('required')
+              ">Details is required</small>
+          </div>
+        </div>
+        <div class="col-md-4 py-2">
+          <div class="form-group">
+            <label for="fromDate" class="fw-bold">From<span class="required">*</span>
+              <span *ngIf="editForm.hasError('previousDate')"
+                class="badge ms-1 float-end bg-warning bg-opacity-25 text-black border">
+                <small> {{ dateValidationMsg }} </small>
+              </span></label>
+            <div class="form-group">
+              <input class="form-control" autocomplete="off" placeholder="yyyy-mm-dd" name="dp" formControlName="fromDate"
+                ngbDatepicker #d1="ngbDatepicker" [markDisabled]="isDisabled" (click)="d1.toggle()" />
+            </div>
+            <!-- <input name="date" id="date" class="form-control bg-white" formControlName="date" required> -->
+          </div>
+          <small class="text-danger" *ngIf="showInvalidMsg && editForm.get('fromDate')?.hasError('required')">Schedule date
+            is required</small>
+        </div>
+        <div class="col-md-2 py-2 d-flex align-items-end">
+          <ngb-timepicker formControlName="startDateTime" [spinners]="false" [meridian]="false">
+          </ngb-timepicker>
+          <small class="text-danger" *ngIf="
+              showInvalidMsg &&
+              editForm.get('startDateTime')?.hasError('required')
+            ">Start time is required</small>
+        </div>
+        <div class="col-md-4 py-2">
+          <div class="form-group">
+            <label for="toDate" class="fw-bold">To<span class="required">*</span>
+              <span *ngIf="editForm.hasError('previousDate')"
+                class="badge ms-1 float-end bg-warning bg-opacity-25 text-black border">
+                <small> {{ dateValidationMsg }} </small>
+              </span></label>
+            <div class="form-group">
+              <input class="form-control" autocomplete="off" placeholder="yyyy-mm-dd" name="dp" formControlName="toDate"
+                ngbDatepicker #d2="ngbDatepicker" [markDisabled]="isDisabled" (click)="d2.toggle()" />
+            </div>
+            <!-- <input name="date" id="date" class="form-control bg-white" formControlName="date" required> -->
+          </div>
+          <small class="text-danger" *ngIf="showInvalidMsg && editForm.get('toDate')?.hasError('required')">Schedule date
+            is required</small>
+        </div>
+        <div class="col-md-2 py-2 d-flex align-items-end">
+          <ngb-timepicker formControlName="endDateTime" [spinners]="false" [meridian]="false">
+          </ngb-timepicker>
+          <small class="text-danger" *ngIf="
+              showInvalidMsg && editForm.get('endDateTime')?.hasError('required')
+            ">End time is required</small>
+        </div>
+      </div>
+    </form>
+    <div *ngIf="availableSchedules.length || availableRequests.length">
+      <hr />
+      <span class="badge bg-warning bg-opacity-25 text-black border mb-2 d-block">
+        There are available schedules booked in this slot
+      </span>
+      <div class="row">
+        <div class="col-md-6">
+          <div *ngFor="let sch of availableSchedules">
+            <ng-container [ngTemplateOutlet]="scheduleCard" [ngTemplateOutletContext]="{ $implicit: sch }"></ng-container>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div *ngFor="let req of availableRequests">
+            <ng-container [ngTemplateOutlet]="requestCard" [ngTemplateOutletContext]="{ $implicit: req }">
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<ng-template #requestCard let-req>
+  <span *ngIf="req.showBefore" class="before"></span>
+  <div *ngIf="req.showDate" class="date">{{ req.dateText }}</div>
+  <div class="content card bg-main-color live-card m-auto d-block p-3 position-relative mb-2">
+    <h3 class="text-capitalize">{{ req.requestType }}</h3>
+
+    <!-- Request by -->
+    <ng-container *ngIf="req.name">
+      <p>
+        By: <span>{{ req.name }}</span>
+      </p>
+    </ng-container>
+
+    <p>
+      <strong>Date: {{ req.requestDateTime | date }}</strong>
+    </p>
+    <p class="mb-md-2">
+      <strong>From: {{ req.dateRange }}</strong>
+    </p>
+
+    <!-- request Channel -->
+    <ng-container *ngIf="req.channel">
+      <p>
+        Channel:
+        <span>{{ req.channel?.name }}</span>
+      </p>
+    </ng-container>
+
+    <ng-container *ngIf="req.participants">
+      <div *ngFor="let participant of req.participants">
+        <p class="text-capitalize">
+          {{ participant.type }}:
+          <span>{{ participant.name }}</span>
+        </p>
+      </div>
+    </ng-container>
+
+    <p class="mb-md-3 mt-md-2">
+      <strong>{{ req.interval }}</strong>
+    </p>
+    <div class="request-status end-0 m-3 position-absolute top-0">
+      <span class="badge bg-primary bg-gradient px-3 py-2 rounded-pill" *ngIf="req.status == 'pending'">{{
+        req.status
+        }}</span>
+      <span class="badge bg-success bg-gradient px-3 py-2 rounded-pill" *ngIf="req.status == 'approved'">{{
+        req.status
+        }}</span>
+      <span class="badge bg-danger bg-gradient px-3 py-2 rounded-pill" *ngIf="req.status == 'rejected'">{{
+        req.status
+        }}</span>
+    </div>
+    <p>{{ req.details }}</p>
+    <div class="view-request bg-white rounded-pill bottom-0 end-0 m-3 position-absolute">
+      <span class="badge rounded" role="button" (click)="viewRequestDetails(req._id)">
+        <i class="bi bi-eye-fill text-black"></i>
+      </span>
+    </div>
+  </div>
+  <span *ngIf="req.showAfter" class="after"></span>
+</ng-template>
+
+<ng-template #scheduleCard let-sch>
+  <div class="bg-main-color card live-card m-auto d-block p-3 rounded position-relative mb-2">
+    <h3 class="text-capitalize">{{ sch.resourceId?.name }}</h3>
+    <strong>Type: <span>{{ sch.type?.name }}</span></strong>
+    <p>
+      By: <span>{{ sch.userId?.name }}</span>
+    </p>
+    <p>
+      <strong>Date: {{ sch.date | date }}</strong>
+    </p>
+    <p class="mb-md-2">
+      <strong>From: {{ sch.dateRange }}</strong>
+    </p>
+    <p>Details: {{ sch.details }}</p>
+  </div>
+</ng-template>
+<!-- <ngx-spinner type="ball-scale-multiple"></ngx-spinner> -->

@@ -1,0 +1,98 @@
+<header class="">
+  <nav class="navbar nav-masthead navbar-expand-lg navbar-light my-3" style="font-size: 0.9rem">
+    <div class="container-fluid p-0">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link mx-2" [routerLink]="['/approvals']" [queryParams]="{ type: 'pending' }"
+            routerLinkActive="active">Approvals</a>
+          <a class="nav-link mx-2" [routerLink]="['/calendar']" routerLinkActive="active">Calendar</a>
+          <a class="nav-link mx-2" [routerLink]="['/my-bookings']" routerLinkActive="active">My Bookings</a>
+          <a class="nav-link mx-2" *ngIf="['CREATE_SCHEDULE'] | auth" [routerLink]="['/schedules']"
+            routerLinkActive="active">Schedules</a>
+          <li class="nav-item dropdown" *ngIf="['ADMIN'] | auth">
+            <a class="nav-link mx-2 dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Admin
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li>
+                <a class="dropdown-item" [routerLink]="['/admin/resources']" routerLinkActive="active">Resources</a>
+              </li>
+              <li>
+                <a class="dropdown-item" [routerLink]="['/admin/channels']" routerLinkActive="active">Channels</a>
+              </li>
+              <li>
+                <a class="dropdown-item" [routerLink]="['/admin/resource-types']" routerLinkActive="active">Resource
+                  Types</a>
+              </li>
+              <li>
+                <a class="dropdown-item" [routerLink]="['/admin/schedule-types']" routerLinkActive="active">Schedule
+                  Types</a>
+              </li>
+              <li>
+                <a class="dropdown-item" [routerLink]="['/admin/shoot-types']" routerLinkActive="active">Shoot Types</a>
+              </li>
+              <li>
+                <hr class="dropdown-divider" />
+              </li>
+              <li>
+                <a class="dropdown-item" [routerLink]="['/admin/users']" routerLinkActive="active">Users</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown" *ngIf="['ADMIN'] | auth">
+            <a class="nav-link mx-2 dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              Support
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li>
+                <a class="dropdown-item" [routerLink]="['/support/faq']" routerLinkActive="active">FAQ</a>
+              </li>
+              <li>
+                <a class="dropdown-item" [routerLink]="['/support/create_support_case']" routerLinkActive="active">Create Support
+                  Case</a>
+              </li>
+            </ul>
+          </li>
+        </div>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown card p-2">
+            <a class="nav-link dropdown-toggle border-0" href="#" id="navbarDropdown" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Hi,
+              <!-- {{userName}} -->
+              {{ name$ | async }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" [routerLink]="['profile']">Profile</a>
+              </li>
+              <li>
+                <hr class="dropdown-divider" />
+              </li>
+              <li>
+                <!-- {{#if authenticated}} -->
+                <a class="dropdown-item" (click)="signOut()">Logout</a>
+                <!-- {{else}} -->
+                <!-- <a class="dropdown-item" href="/login">Login</a> -->
+                <!-- {{/if}} -->
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="start-0 end-0 w-25 m-auto d-none d-sm-inline-flex justify-content-center" style="position: absolute">
+      <img src="/assets/images/sky-news.png" alt="" width="180px"
+        class="d-inline-block align-self-center align-text-top" />
+    </div>
+    <div class="start-0 end-0 w-50 m-auto d-inline-block d-sm-none top-0" style="position: absolute">
+      <img src="/assets/images/sky-news.png" alt="" width="180px" class="d-inline-block align-text-top" />
+    </div>
+  </nav>
+</header>

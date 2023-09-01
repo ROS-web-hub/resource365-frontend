@@ -1,0 +1,24 @@
+.icon-wrap {
+    height: 4.5rem;
+    width: 4.5rem;
+    font-size: 24px;
+    display: block;
+    margin: auto;
+    padding-top: 1rem;
+}
+
+.bg-gr-primary {
+    background-image: linear-gradient(40deg, rgba(255, 255, 255, 0.3) 5%,#01246E 90%);
+}
+
+.bg-gr-success {
+    background-image: linear-gradient(40deg, rgba(255, 255, 255, 0.3) 5%,#1F9653 90%);
+}
+
+.bg-gr-danger {
+    background-image: linear-gradient(40deg, rgba(255, 255, 255, 0.3) 5%,#A90000 90%);
+}
+
+.requests-count {
+    font-size: 4rem;
+}

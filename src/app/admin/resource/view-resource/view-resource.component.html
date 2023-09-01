@@ -1,0 +1,57 @@
+<div class="modal-content">
+    <div class="modal-body">
+        <div class="d-flex mb-3">
+            <div class="flex-grow-1 bd-highlight">
+                <label id="view_record_title" class="fs-3">{{ data?.name }}</label>
+                <div class="px-2 bd-highlight float-end">
+                    <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm fw-bold">Name</label>
+            <div class="col-sm-9">
+                <span id="view_record_name">{{ data?.name }}</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm fw-bold">Type</label>
+            <div class="col-sm-9">
+                <span id="view_record_type">{{ data?.name }}</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm fw-bold">Auto-approval</label>
+            <div class="col-sm-9">
+                <span id="view_record_type">{{ data?.autoApproval==true? 'True': 'False' }} </span>
+                <span id="view_record_type mx-2" *ngIf="data?.autoApproval"> ({{ data?.startTime }} to {{ data?.endTime
+                    }})</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm fw-bold">Location</label>
+            <div class="col-sm-9">
+                <span id="view_record_location">{{ data?.location }}</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm fw-bold">Owners</label>
+            <div class="col-sm-9">
+                <a *ngFor="let owner of data?.owners" (click)="closeModal()" [routerLink]="['/admin/users']"
+                    [queryParams]="{'action': 'edit', 'id': owner._id}">
+                    <span class="view_record_owner me-1">
+                        {{ owner.name }}</span>
+                </a>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="colFormLabelSm" class="col-sm-3 col-form-label col-form-label-sm fw-bold">Watchers</label>
+            <div class="col-sm-9">
+                <a *ngFor="let wacher of data?.watchers">
+                    <span class="view_record_owner me-1">{{ wacher.name }}, </span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

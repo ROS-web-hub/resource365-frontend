@@ -1,0 +1,327 @@
+<div class="">
+  <div class="">
+    <div class="options py-4">
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="d-flex flex-row">
+            <div class="p-2 bd-highlight">
+              <div class="form-check approved">
+                <input class="form-check-input" type="checkbox" (click)="filterByStatus($event)" value="approved"
+                  id="approvedCheck" checked="true" />
+                <label class="form-check-label" for="approvedCheck">
+                  Approved
+                </label>
+              </div>
+            </div>
+            <div class="p-2 bd-highlight">
+              <div class="form-check pending">
+                <input class="form-check-input" type="checkbox" (click)="filterByStatus($event)" value="pending"
+                  id="requestCheck" checked />
+                <label class="form-check-label" for="requestCheck">
+                  Pending
+                </label>
+              </div>
+            </div>
+            <div class="p-2 bd-highlight">
+              <div class="form-check rejected">
+                <input class="form-check-input" type="checkbox" (click)="filterByStatus($event)" value="rejected"
+                  id="rejectCheck" checked />
+                <label class="form-check-label" for="rejectCheck">
+                  Rejected
+                </label>
+              </div>
+            </div>
+            <div class="p-2 bd-highlight">
+              <div class="form-check myrequest">
+                <input class="form-check-input" type="checkbox" (click)="setMyRequestsOnly($event)" id="myrequest" />
+                <label class="form-check-label" for="myrequest">
+                  My Requests only
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="row d-flex d-sm-none">
+            <div class="col-md-12">
+              <ul class="nav justify-content-evenly">
+                <li class="nav-item ms-1 mt-1">
+                  <button type="button" class="btn btn-secondary btn-fill bg-main-color border-mc text-black"
+                    (click)="openFilterModal(resourceFilter)">
+                    <span class="d-none d-sm-block"> Filter </span>
+                    <i class="bi bi-filter"></i>
+                  </button>
+                </li>
+                <li class="nav-item ms-1 mt-1" *ngIf="['CREATE_REQUEST'] | auth">
+                  <button class="btn btn-success btn-fill text-white" [routerLink]="['/request', 'new']">
+                    <a>
+                      <span class="d-none d-sm-block"> </span>
+                      <i class="bi bi-plus-lg"></i>
+                    </a>
+                  </button>
+                </li>
+                <li class="nav-item ms-1 mt-1">
+                  <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      <span id="calendar_type">{{ viewType }}</span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li>
+                        <a class="dropdown-item cursor-pointer" (click)="changeView('dayGridMonth')">Monthly</a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item cursor-pointer" (click)="changeView('timeGridWeek')">Weekly</a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item cursor-pointer" (click)="changeView('resourceTimeGridDay')">Daily</a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+                <li class="nav-item ms-1 mt-1">
+                  <div class="dropdown time-slots">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      <span class="time_slots">Time Scale: {{ selectedTimeSlot }}</span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li *ngFor="let timeSlot of timeSlots">
+                        <a class="dropdown-item" (click)="setTimeSlot(timeSlot)">{{ timeSlot }}</a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+              <hr />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+              <ul class="nav justify-content-end calendar-options d-none d-md-flex">
+                <li class="nav-item">
+                  <i class="bi bi-bootstrap-reboot btn rounded-circle text-white mx-2" [ngClass]="{
+                    'btn-primary': isAllToggled('') == false,
+                    'btn-secondary': isAllToggled('') == true}" (click)="allfilter()"></i>
+                </li>
+                <li class="nav-item ms-1">
+                  <button type="button" class="btn btn-secondary btn-fill bg-main-color border-mc text-black"
+                    (click)="openFilterModal(resourceFilter)">
+                    Filter
+                    <i class="bi bi-filter"></i>
+                  </button>
+                </li>
+                <li class="nav-item ms-1" *ngIf="['CREATE_REQUEST'] | auth">
+                  <button class="btn btn-success btn-fill text-white" [routerLink]="['/request', 'new']">
+                    <a>New Request
+                      <i class="bi bi-plus-lg"></i>
+                    </a>
+                  </button>
+                </li>
+                <li class="nav-item ms-1">
+                  <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      <span id="calendar_type">{{ viewType }}</span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li>
+                        <a class="dropdown-item cursor-pointer" (click)="changeView('dayGridMonth')">Monthly</a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item cursor-pointer" (click)="changeView('timeGridWeek')">Weekly</a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item cursor-pointer" (click)="changeView('resourceTimeGridDay')">Daily</a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+                <li class="nav-item ms-1">
+                  <div class="dropdown time-slots">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      <span class="time_slots">Time Scale {{ selectedTimeSlot }}</span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li *ngFor="let timeSlot of timeSlots">
+                        <a class="dropdown-item" (click)="setTimeSlot(timeSlot)">{{ timeSlot }}</a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+              <div class="dropdown justify-content-end calendar-options d-none d-sm-flex d-md-none">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="respDropDownMenu"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  <span id="calendar_options">Options</span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="respDropDownMenu">
+                  <li>
+                    <a class="dropdown-item" (click)="openFilterModal(resourceFilter)">Filter</a>
+                  </li>
+                  <li [routerLink]="['/request', 'new']" *ngIf="['CREATE_REQUEST'] | auth">
+                    <a class="dropdown-item">New Request</a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider" />
+                  </li>
+                  <li>
+                    <a class="dropdown-item cursor-pointer" (click)="changeView('dayGridMonth')">Monthly</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item cursor-pointer" (click)="changeView('timeGridWeek')">Weekly</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item cursor-pointer" (click)="changeView('resourceTimeGridDay')">Daily</a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider" />
+                  </li>
+                  <li class="time-slots no-dropdown"></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div id="ec"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #resourceFilter let-modal>
+  <!-- <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Resource Filter</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div> -->
+  <div class="modal-body p-5">
+    <div class="w-100 mb-2" *ngIf="
+        userDetails &&
+        userDetails.preferences &&
+        !userDetails.preferences.resourceFilters.length
+      ">
+      <span style="white-space: normal" class="badge bg-warning bg-opacity-25 border text-black">
+        Please select and save the desired resources which will be save in your
+        profile for your preferences
+      </span>
+    </div>
+    <h1 class="text-center mt-2 mb-5">Calendar Filter</h1>
+    <div class="row mx-3 g-3">
+      <div class="col-md-6 form-check">
+        <input class="form-check-input resource-filter" type="checkbox" value="" id="1" [checked]="isAllToggled('')"
+          (change)="toggleAllResources('', $event); " />
+        <label class="form-check-label" for="flexCheckDefault">
+          Toggle All Resources
+        </label>
+      </div>
+    </div>
+    <div *ngIf="resources">
+      <ng-container *ngFor="let t of resourceTypes">
+        <ng-container *ngIf="hasResources(t)">
+          <hr />
+          <h4>{{ t.name }}</h4>
+          <div class="row mx-3 mb-2">
+            <div class="form-check">
+              <input class="form-check-input resource-filter" type="checkbox" value="" id="1"
+                [checked]="isAllToggled(t._id)" (change)="toggleAllResources(t._id, $event)" />
+              <label class="form-check-label" for="flexCheckDefault">
+                All
+              </label>
+            </div>
+          </div>
+          <div class="row mx-3 g-3">
+            <ng-container *ngFor="let r of resources">
+              <ng-container *ngIf="r.type == t._id">
+                <div class="col-md-4 col-sm-6 form-check">
+                  <input class="form-check-input resource-filter" type="checkbox" value="" id="{{ r._id }}"
+                    [checked]="r.checked" (change)="toggleResource(r, $event)" />
+                  <label class="form-check-label" for="flexCheckDefault">
+                    {{ r.name }}
+                  </label>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </ng-container>
+      </ng-container>
+      <br />
+      <div class="text-center">
+        <button type="button" class="btn btn-lg btn-outline-secondary mx-2 px-5" (click)="cancelFilterResource()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-lg btn-primary mx-2 px-5" (click)="filterSaveByResources()">
+          Filter
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="modal-footer">
+    <button type="button" class="btn btn-primary me-auto" (click)="filterSaveByResources()">
+      Filter & Save
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="cancelFilterResource()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="filterSaveByResources()">
+      Filter
+    </button>
+  </div> -->
+</ng-template>
+
+<!--  This is the blue print for the event options, do not remove it  -->
+<div class="ec-options d-none" id="ec-options">
+  <div class="view" id="ec-options__delete">
+    <i class="bi bi-trash3"></i>
+  </div>
+  <div class="edit" id="ec-options__edit">
+    <i class="bi bi-pencil-square"></i>
+  </div>
+  <div class="view" id="ec-options__view">
+    <i class="bi bi-eye"></i>
+  </div>
+</div>
+
+<!-- Event Month view  -->
+<ng-template #eventMonthTemplate let-e>
+  <div>
+    <div>
+      <span class="this.ec-dot" [style.backgroundColor]="e.backgroundColor"></span>
+      {{ e.startString }} to {{ e.endString }}
+    </div>
+    <div>
+      <span>
+        {{ e.resourceName }}
+      </span>
+      <span> By: {{ e.requesteBy.name }} </span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #confirmModalContent let-modal>
+  <div class="modal-body">
+    <h5>Are you sure?</h5>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="deleteRequest()">
+      Delete
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close()">
+      Cancel
+    </button>
+  </div>
+</ng-template>
+
+<div id="contextMenu" class="context-menu" style="display: none">
+  <ul class="dropdown-menu show overflow-hidden" aria-labelledby="dropdownMenuButton1">
+    <li>
+      <a class="dropdown-item cursor-pointer create-request-action" (click)="addRequest()"
+        [ngClass]="{ 'text-secondary': !(['CREATE_REQUEST'] | auth) }"></a>
+    </li>
+  </ul>
+</div>
+
+<!-- <ngx-spinner [fullScreen]="false" type="ball-scale-multiple"></ngx-spinner> -->

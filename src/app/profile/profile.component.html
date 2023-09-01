@@ -1,0 +1,25 @@
+<section>
+	<div class="card numbers-card mt-5">
+		<div class="card-body">
+			<!-- <input type="file" class="d-none" #userImage (change)="onAttachmentSelected($event)">
+			<ng-container *ngIf="!attachmentSet">
+				<button class="btn btn-primary btn-sm float-end" (click)="userImage.click()">Update Image</button>
+			</ng-container>
+
+			<ng-container *ngIf="attachmentSet">
+				<button class="btn btn-secondary btn-sm mx-2 float-end" (click)="cancel()">Cancel</button>
+				<button class="btn btn-success text-white btn-sm float-end" (click)="saveImage()">Save</button>
+			</ng-container> -->
+			<div class="user-avatar mb-2">
+				<div class="image-wrapper">
+					<img [src]="imageUrl" alt="" #image (error)="imageError(image)">
+				</div>
+			</div>
+			<div class="mt-5 pt-3 position-relative">
+				<h5 class="card-title text-center mt-4">{{user?.name }}</h5>
+				<h5 class="card-title text-center">{{user?.username}}</h5>
+			</div>
+
+		</div>
+	</div>
+</section>

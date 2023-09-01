@@ -1,0 +1,76 @@
+<div class="card">
+    <div class="card-body">
+        <div class="px-md-5">
+            <div class="pt-3">
+                <form [formGroup]="requestForm" #formRef="ngForm" novalidate (ngSubmit)="formSubmit()">
+                    <div class="row">
+                        <div class="">
+                            <div class="col-md-12 py-5">
+                                <label for="details" class="fw-bold">Add Details Describing The Issue
+                                    <span class="text-danger">*</span></label>
+                                <textarea formControlName="details" id="details" class="form-control" rows="10"
+                                    required></textarea>
+                                <small class="text-danger" *ngIf="
+                                formRef.submitted &&
+                                requestForm.get('details')?.hasError('required')
+                              ">Details is required</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex">
+                            <div class="py-5">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="attachment" class="form-label fw-bold">Attach any supporting
+                                            images</label>
+                                        <i role="button" (click)="removeAttachment($event)" id="remove_attachment"
+                                            class="float-end bi bi-trash" *ngIf="attachmentSet"></i>
+                                    </div>
+                                    <input type="file" formControlName="attachment" class="form-contorl d-none"
+                                        id="attachment" #attachment (change)="onAttachmentSelected($event)" />
+                                    <div>
+                                        <div role="button" (click)="attachment.click()"
+                                            class="text-center bg-main-color border d-inline-block p-5 rounded-3 cursor-pointer">
+                                            <i class="bi bi-file-earmark-plus"></i>
+                                            <p class="mt-2" id="attachment_name">
+                                                {{ attachmentName }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stepper-actions py-5 text-center">
+                        <button class="btn btn-primary btn-lg" [disabled]="!requestForm.valid" (click)="showModal()">
+                            <span class="mx-3 text-white"> Submit </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #submitModal let-modal3>
+    <div class="modal-body">
+        <h5>
+            Thank you for submitting a support case. <br /> You case Id is: Sky-News- {{uuid}}<br /><br />
+
+            An email has been sent to you and to the support team with the details of this case.
+            <br />
+            You will receive subsequent updates when this case is determined to be one of the following:
+            <br />
+            <br />
+            1 - Bug and will be fixed<br />
+            2 - Enhancement and will be discussed<br />
+            3 - Missed requirements and will be discussed<br />
+            4 - Normal system behavior and will closed<br />
+        </h5>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal3.close()">
+            Close
+        </button>
+    </div>
+</ng-template>

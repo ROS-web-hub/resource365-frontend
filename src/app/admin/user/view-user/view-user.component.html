@@ -1,0 +1,25 @@
+<div class="modal-content">
+    <div class="modal-body">
+        <div class="d-flex mb-3">
+            <div class="flex-grow-1 bd-highlight">
+                <label id="view_record_title" class="fs-3">{{ data?.name }}</label>
+                <div class="px-2 bd-highlight float-end">
+                    <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm fw-bold">Name</label>
+            <div class="col-sm-10">
+                <span id="view_record_name">{{ data?.name }}</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm fw-bold">Username</label>
+            <div class="col-sm-10">
+                <span id="view_record_username">{{ data?.username }}</span>
+            </div>
+        </div>
+    </div>
+</div>

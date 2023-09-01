@@ -1,0 +1,671 @@
+<div class="card">
+  <div class="card-body">
+    <h5 class="text-center m-auto mb-2">My Request</h5>
+    <ng-stepper #cdkStepper [linear]="true" (selectionChange)="selectionChanged($event)">
+      <cdk-step [optional]="false" [stepControl]="requestForm">
+        <ng-template cdkStepLabel>
+          <div class="step-bullet">
+            <i class="bi bi-clipboard"></i>
+          </div>
+          <div class="step-title">
+            Information<span class="text-danger">*</span>
+          </div>
+        </ng-template>
+        <div class="px-5">
+          <hr />
+          <div class="row">
+            <div class="col-md-12">
+              <nav id="request_types">
+                <div class="nav justify-content-md-evenly" id="nav-tab" role="tablist">
+                  <div class="form-check form-check-inline d-flex active" data-toggle="form">
+                    <input type="radio" class="form-check-input fs-4" id="live" value="live"
+                      [name]="requestTypeGroupName" [(ngModel)]="requestType"
+                      (ngModelChange)="changeRequestType($event)" />
+                    <span class="align-self-end px-3">Live</span>
+                  </div>
+                  <div class="form-check form-check-inline d-flex" data-toggle="form">
+                    <input type="radio" class="form-check-input fs-4" id="prerecorded" value="prerecorded"
+                      [name]="requestTypeGroupName" [(ngModel)]="requestType"
+                      (ngModelChange)="changeRequestType($event)" />
+                    <span class="align-self-end px-3">Pre-record</span>
+                  </div>
+                  <div class="form-check form-check-inline d-flex" data-toggle="form">
+                    <input type="radio" class="form-check-input fs-4" id="cameraman" value="cameraman"
+                      [name]="requestTypeGroupName" [(ngModel)]="requestType"
+                      (ngModelChange)="changeRequestType($event)" />
+                    <span class="align-self-end px-3">Camera Crew</span>
+                  </div>
+                </div>
+              </nav>
+            </div>
+          </div>
+
+          <div class="pt-3">
+            <form [formGroup]="requestForm" #formRef="ngForm" novalidate (ngSubmit)="formSubmit()">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="row">
+                        <div class="col-8 py-2">
+                          <label for="fromDateTime" class="form-label d-block fw-bold">From Date<span
+                              class="text-danger">*</span>
+                            <span *ngIf="requestForm.hasError('previousDate')"
+                              class="badge me-1 float-end bg-warning bg-opacity-25 text-black border">
+                              <small> {{ dateValidationMsg }} </small>
+                            </span>
+                          </label>
+                          <div>
+                            <div class="form-group">
+                              <input class="form-control" placeholder="yyyy-mm-dd" name="dp"
+                                formControlName="fromDateTime" ngbDatepicker autocomplete="off" (click)="d.toggle()"
+                                #d="ngbDatepicker" [markDisabled]="isDisabled" />
+
+                              <!-- <div
+                            class=" calendar"
+                            (click)="d.toggle()"
+                            type="button"
+                          >
+                            <i class="bi bi-calendar"></i>
+                          </div> -->
+                            </div>
+                          </div>
+
+                          <small class="text-danger" *ngIf="
+                              formRef.submitted &&
+                              requestForm
+                                .get('fromDateTime')
+                                ?.hasError('required')
+                            ">Date is required</small>
+                        </div>
+                        <div class="col-4 py-2 justify-content-between d-flex">
+                          <div></div>
+                          <div>
+                            <label for="startDateTime" class="form-label fw-bold">From<span
+                                class="text-danger">*</span></label>
+                            <!-- <input
+                        type="time"
+                        formControlName="startDateTime"
+                        format="24"
+                        class="form-control"
+                        id="startDateTime"
+                        required
+                      /> -->
+                            <ngb-timepicker formControlName="startDateTime" [spinners]="false" [meridian]="false">
+                            </ngb-timepicker>
+                            <small class="text-danger" *ngIf="
+                                formRef.submitted &&
+                                requestForm
+                                  .get('startDateTime')
+                                  ?.hasError('required')
+                              ">Start date is required</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                      <div class="row">
+                        <div class="col-8 py-2">
+                          <label for="toDateTime" class="form-label d-block fw-bold">To Date<span
+                              class="text-danger">*</span>
+                            <span *ngIf="requestForm.hasError('previousDate')"
+                              class="badge me-1 float-end bg-warning bg-opacity-25 text-black border">
+                              <small> {{ dateValidationMsg }} </small>
+                            </span>
+                          </label>
+                          <div>
+                            <div class="form-group">
+                              <input class="form-control" placeholder="yyyy-mm-dd" name="dp"
+                                formControlName="toDateTime" ngbDatepicker autocomplete="off" (click)="d1.toggle()"
+                                #d1="ngbDatepicker" [markDisabled]="isDisabled" />
+
+                              <!-- <div
+                            class=" calendar"
+                            (click)="d.toggle()"
+                            type="button"
+                          >
+                            <i class="bi bi-calendar"></i>
+                          </div> -->
+                            </div>
+                          </div>
+
+                          <small class="text-danger" *ngIf="
+                              formRef.submitted &&
+                              requestForm
+                                .get('toDateTime')
+                                ?.hasError('required')
+                            ">Date is required</small>
+                        </div>
+                        <div class="col-4 py-2 justify-content-between d-flex">
+                          <div></div>
+                          <div>
+                            <label for="endDateTime" class="form-label fw-bold">To<span
+                                class="text-danger">*</span></label>
+                            <!-- <input
+                        type="time"
+                        formControlName="endDateTime"
+                        class="form-control"
+                        id="endDateTime"
+                        required
+                      /> -->
+                            <ngb-timepicker formControlName="endDateTime" [spinners]="false" [meridian]="false">
+                            </ngb-timepicker>
+                            <small class="text-danger" *ngIf="
+                                formRef.submitted &&
+                                requestForm
+                                  .get('endDateTime')
+                                  ?.hasError('required')
+                              ">End time is required</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 py-2" *ngIf="requestType == 'prerecorded'">
+                  <label for="inputResourceType" class="form-label fw-bold">Resource Type<span
+                      class="text-danger">*</span></label>
+                  <ng-select [items]="resourceTypes" bindLabel="name" bindValue="_id" formControlName="resourceType"
+                    (change)="resourceChange($event)">
+                  </ng-select>
+                  <small class="text-danger" *ngIf="
+                      formRef.submitted &&
+                      requestForm.get('resourceType')?.hasError('required')
+                    ">Resource Type is required</small>
+                </div>
+                <div class="col-md-6 py-2" *ngIf="requestType == 'prerecorded'">
+                  <div class="d-flex justify-content-between">
+                    <label for="inputResourceName" class="form-label fw-bold">Resource Name<span
+                        class="text-danger">*</span></label>
+                  </div>
+                  <ng-select [items]="resources$ | async" bindLabel="name" bindValue="_id"
+                    formControlName="resourceName" (change)="prerecordnamechange($event)">
+                  </ng-select>
+                  <small class="text-danger" *ngIf="
+                      formRef.submitted &&
+                      requestForm.get('resourceName')?.hasError('required')
+                    ">Resource Name is required</small>
+                </div>
+                <div class="col-md-6 py-2" *ngIf="requestType == 'live'">
+                  <label for="inputChannel" class="form-label fw-bold">Channel<span class="text-danger">*</span></label>
+                  <ng-select [items]="channels$ | async" bindLabel="name" bindValue="_id" formControlName="channel">
+                  </ng-select>
+                  <small class="text-danger" *ngIf="
+                      formRef.submitted &&
+                      requestForm.get('channel')?.hasError('required')
+                    ">Channel is required</small>
+                </div>
+                <div class="col-md-3 py-2" *ngIf="requestType == 'live'">
+                  <label for="inputShootType" class="form-label fw-bold">Resource Type<span
+                      class="text-danger">*</span></label>
+                  <ng-select [items]="resourceTypes" bindLabel="name" bindValue="_id" formControlName="resourceType"
+                    (change)="resourceChange($event)">
+                  </ng-select>
+                  <small class="text-danger" *ngIf="
+                      formRef.submitted &&
+                      requestForm.get('resourceType')?.hasError('required')
+                    ">Resource Type is required</small>
+                </div>
+                <div class="col-md-3 py-2" *ngIf="requestType == 'live'">
+                  <div class="d-flex justify-content-between">
+                    <label for="inputResourceName" class="form-label fw-bold">Resource Name<span
+                        class="text-danger">*</span></label>
+                  </div>
+                  <ng-select [items]="resources$ | async" bindLabel="name" bindValue="_id"
+                    formControlName="resourceName" (change)="livenamechange($event)">
+                  </ng-select>
+                  <small class="text-danger" *ngIf="
+                      formRef.submitted &&
+                      requestForm.get('resourceName')?.hasError('required')
+                    ">Resource Name is required</small>
+                </div>
+                <div class="col-md-12 py-2" *ngIf="requestType == 'live' || requestType == 'remote'">
+                  <label for="name" class="form-label fw-bold">{{ requestType == "live" ? "Name" : "Individual"
+                    }}<span class="text-danger">*</span></label>
+                  <input type="text" formControlName="name" class="form-control" id="name" required />
+                  <small class="text-danger" *ngIf="
+                      formRef.submitted &&
+                      requestForm.get('name')?.hasError('required')
+                    ">Name is required</small>
+                </div>
+
+                <!-- Cameraman related fields -->
+                <div *ngIf="requestType == 'cameraman'">
+                  <div class="row">
+                    <div class="col-md-6 py-2">
+                      <div class="form-group">
+                        <label for="program" class="form-label fw-bold">Program<span
+                            class="text-danger">*</span></label>
+                        <input type="text" formControlName="program" class="form-control" id="program" />
+                        <small class="text-danger" *ngIf="
+                            formRef.submitted &&
+                            requestForm.get('program')?.hasError('required')
+                          ">Program is required</small>
+                      </div>
+                    </div>
+                    <div class="col-md-2 py-2" *ngIf="requestType == 'cameraman'">
+                      <label for="inputResourceType" class="form-label fw-bold">Shoot Type<span
+                          class="text-danger">*</span></label>
+                      <ng-select [items]="gShootTypes" bindLabel="name" bindValue="_id" formControlName="shootType">
+                      </ng-select>
+                      <small class="text-danger" *ngIf="
+                          formRef.submitted &&
+                          requestForm.get('shootType')?.hasError('required')
+                        ">Shoot Type is required</small>
+                    </div>
+                    <div class="col-md-2 py-2" *ngIf="requestType == 'cameraman'">
+                      <label for="inputResourceType" class="form-label fw-bold">Resource Type<span
+                          class="text-danger">*</span></label>
+                      <ng-select [items]="resourceTypes" bindLabel="name" bindValue="_id" formControlName="resourceType"
+                        (change)="resourceChange($event)">
+                      </ng-select>
+                      <small class="text-danger" *ngIf="
+                          formRef.submitted &&
+                          requestForm.get('resourceType')?.hasError('required')
+                        ">Resource Type is required</small>
+                    </div>
+                    <div class="col-md-2 py-2" *ngIf="requestType == 'cameraman'">
+                      <div class="d-flex justify-content-start">
+                        <label for="inputResourceName" class="form-label fw-bold">Resource Name<span
+                            class="text-danger">*</span></label>
+                      </div>
+                      <ng-select [items]="resources$ | async" bindLabel="name" bindValue="_id"
+                        formControlName="resourceName" (change)="cameramannamechange($event)">
+                      </ng-select>
+                      <small class="text-danger" *ngIf="
+                          formRef.submitted &&
+                          requestForm.get('resourceName')?.hasError('required')
+                        ">Resource Name is required</small>
+                    </div>
+                    <div class="col-md-12 py-2">
+                      <label for="contactInformation" class="fw-bold">Contact Information<span
+                          class="text-danger">*</span></label>
+                      <textarea formControlName="contactInformation" id="contact_information" class="form-control"
+                        rows="10"></textarea>
+                      <small class="text-danger" *ngIf="
+                          formRef.submitted &&
+                          requestForm
+                            .get('contactInformation')
+                            ?.hasError('required')
+                        ">Contact information is required</small>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Pre recorded -->
+                <ng-container formArrayName="participants">
+                  <div *ngIf="
+                      requestType == 'prerecorded' || requestType == 'live'
+                    ">
+                    <div class="row">
+                      <div *ngFor="
+                          let participant of participants.controls;
+                          let i = index
+                        ">
+                        <ng-container *ngIf="i == 0" [formGroupName]="i">
+                          <div class="row">
+                            <div class="col-md-6 py-2">
+                              <div class="form-group">
+                                <div class="d-flex justify-content-between">
+                                  <label for="hoststudio" class="form-label fw-bold">{{
+                                    "Host"
+                                    }}
+                                    studio<span class="text-danger" *ngIf="!isStudio()">*</span></label>
+                                </div>
+                                <ng-select [items]="studios$ | async" bindLabel="name" bindValue="_id"
+                                  formControlName="studio" (focus)="Handlefocus()"
+                                  (change)="handleHostStudioChange($event)">
+                                </ng-select>
+                                <small class="text-danger" *ngIf="
+                                    formRef.submitted &&
+                                    participants.controls[i]
+                                      .get('studio')
+                                      ?.hasError('required')
+                                  ">Studio is required</small>
+                              </div>
+                            </div>
+                            <div class="col-md-6 py-2">
+                              <label for="host" class="form-label fw-bold">{{ "Host"}}<span class="text-danger" *ngIf="!isStudio()">*</span></label>
+                              <input type="text" formControlName="name" class="form-control" id="host"
+                                (focus)="Handlefocus()" />
+                              <small class="text-danger" *ngIf="
+                                  formRef.submitted &&
+                                  participants.controls[i]
+                                    .get('name')
+                                    ?.hasError('required')
+                                ">Host Name is required</small>
+                            </div>
+                          </div>
+                        </ng-container>
+                        <div class="col-md-12" id="guestwrapper" [formGroupName]="i" *ngIf="i > 0">
+                          <div class="row" id="guestblueprint">
+                            <div class="col-md-6 py-2">
+                              <div class="form-group">
+                                <label for="gueststudio_0" class="form-label fw-bold">Guest studio</label>
+
+                                <ng-select [items]="studios$ | async" bindLabel="name" bindValue="_id"
+                                  formControlName="studio" (focus)="Handlefocus()" (change)="
+                                    handleParticipantStudioChange($event, i)
+                                  ">
+                                </ng-select>
+                              </div>
+                            </div>
+                            <div class="col-md-5 py-2">
+                              <label for="host" class="form-label fw-bold">Guest</label>
+                              <input type="text" formControlName="name" (focus)="Handlefocus()" [value]=""
+                                class="form-control" [id]="'guest_' + i" />
+                            </div>
+                            <div class="col-md-1 py-2 mt-2" *ngIf="isStudio() ? i > 0 : i > 1">
+                              <div class="form-group">
+                                <label for=""> </label>
+                                <div class="remove-guest" id="removeguest" (click)="removeGuest(i)">
+                                  <button type="button" class="btn btn-danger float-end">
+                                    <i class="bi bi-trash"> </i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-12">
+                        <div class="d-grid gap-2 mt-2 py-2">
+                          <button type="button" class="btn btn-primary" (click)="addGuest()">
+                            <i class="bi bi-plus-lg"></i>
+                            Add Guest
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <div class="">
+                  <div class="col-md-12 py-2">
+                    <label for="details" class="fw-bold">Details<span class="text-danger">*</span></label>
+                    <textarea formControlName="details" id="details" class="form-control" rows="10" required></textarea>
+                    <small class="text-danger" *ngIf="
+                        formRef.submitted &&
+                        requestForm.get('details')?.hasError('required')
+                      ">Details is required</small>
+                  </div>
+                </div>
+
+                <div class="d-flex">
+                  <div class="py-2">
+                    <div class="form-group">
+                      <div>
+                        <label for="attachment" class="form-label fw-bold">Attachment</label>
+                        <i role="button" (click)="removeAttachment($event)" id="remove_attachment" *ngIf="attachmentSet"
+                          class="float-end bi bi-trash">
+                        </i>
+                      </div>
+                      <input type="file" formControlName="attachment" class="form-contorl d-none" id="attachment"
+                        #attachment (change)="onAttachmentSelected($event)" />
+                      <div>
+                        <div (click)="attachment.click()" role="button"
+                          class="text-center bg-main-color border d-inline-block p-5 rounded-3 cursor-pointer">
+                          <i class="bi bi-file-earmark-plus"></i>
+                          <p class="mt-2" id="attachment_name">
+                            {{ attachmentName }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="stepper-actions pt-3 text-center">
+                <button class="btn btn-primary btn-lg" (click)="handleClickNext()" [disabled]="!requestForm.valid">
+                  <span class="mx-3"> Next </span>
+                </button>
+                <!-- <button
+                  class="btn btn-primary btn-lg"
+                  cdkStepperNext
+                  [disabled]="!requestForm.valid"
+                >
+                  <span class="mx-3"> Next </span>
+                </button> -->
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </cdk-step>
+
+      <cdk-step [optional]="false">
+        <ng-template cdkStepLabel>
+          <div class="step-bullet">
+            <i class="bi bi-clock"></i>
+          </div>
+          <div class="step-title">Availability</div>
+        </ng-template>
+        <div class="row">
+          <ngb-alert type="warning" [dismissible]="false" *ngIf="!allSlotsAvailable && !processing">
+            <span class="badge bg-warning bg-opacity-25 text-black me-2 p-2"><strong>REJECTED</strong></span>
+            The timeslots selected is/are not available due to the following events or schedules booked in it/them
+          </ngb-alert>
+          <div class="col-md-6 col-sm-12">
+            <h5>Requests</h5>
+            <div *ngFor="let req of availableRequests">
+              <ng-container [ngTemplateOutlet]="requestCard" [ngTemplateOutletContext]="{ $implicit: req }">
+              </ng-container>
+            </div>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <h5>Schedules</h5>
+            <div *ngFor="let sch of availableSchedules">
+              <ng-container [ngTemplateOutlet]="scheduleCard" [ngTemplateOutletContext]="{ $implicit: sch }">
+              </ng-container>
+            </div>
+          </div>
+          <div class="stepper-actions pt-3 text-center">
+            <button class="btn btn-outline-secondary btn-lg" cdkStepperPrevious>
+              <span class="mx-3"> Previous </span>
+            </button>
+          </div>
+        </div>
+      </cdk-step>
+
+      <cdk-step [optional]="true">
+        <ng-template cdkStepLabel>
+          <div class="step-bullet">
+            <i class="bi bi-flag"></i>
+          </div>
+          <div class="step-title">Finish</div>
+        </ng-template>
+        <div>
+          <div>
+            <ngb-alert type="success" [dismissible]="false">
+              <span class="badge bg-success bg-opacity-25 me-2 p-2"><strong>AVAILABLE</strong></span>
+              The requested time slot is available please press the submit
+              button to book the request
+            </ngb-alert>
+          </div>
+          <div class="p-3 rounded border bg-main-color" *ngIf="requestObject">
+            <table class="my-4">
+              <ng-container *ngIf="requestType == 'live'">
+                <tr *ngIf="requestObject.resourceName2">
+                  <td class="fw-bold py-2">ResourceName</td>
+                  <td class="ms-4 py-2">{{ requestObject.resourceName2 }}</td>
+                </tr>
+                <tr *ngIf="requestObject.resourceTypeName">
+                  <td class="fw-bold py-2 pe-2">ResourceType</td>
+                  <td class="ms-4 py-2">{{ requestObject.resourceTypeName }}</td>
+                </tr>
+                <tr *ngIf="requestObject.channel">
+                  <td class="fw-bold py-2">Channel</td>
+                  <td class="ms-4 py-2">{{ requestObject.channelName }}</td>
+                </tr>
+                <tr *ngIf="requestObject.studio">
+                  <td class="fw-bold py-2 pe-2">Studio</td>
+                  <td class="ms-4 py-2">{{ requestObject.studioName }}</td>
+                </tr>
+              </ng-container>
+              <tr *ngIf="requestObject.name">
+                <td class="fw-bold py-2 pe-2">Name</td>
+                <td class="ms-4 py-2">{{ requestObject.name }}</td>
+              </tr>
+              <ng-container *ngIf="requestType == 'prerecorded'">
+                <tr *ngIf="requestObject.resourceName2">
+                  <td class="fw-bold py-2">ResourceName</td>
+                  <td class="ms-4 py-2">{{ requestObject.resourceName2 }}</td>
+                </tr>
+                <tr *ngIf="requestObject.resourceTypeName">
+                  <td class="fw-bold py-2 pe-2">ResourceType</td>
+                  <td class="ms-4 py-2">{{ requestObject.resourceTypeName }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold py-2 pe-2">Control Room</td>
+                  <td class="ms-4 py-2">{{ requestObject.controlRoomName }}</td>
+                </tr>
+              </ng-container>
+              <tr *ngIf="requestType == 'prerecorded' || requestType == 'live'">
+                <td class="fw-bold py-2 pe-2" style="vertical-align: baseline">
+                  Participants
+                </td>
+                <td class="ms-4 py-2">
+                  <div *ngFor="let participant of requestObject.participants" class="pb-1">
+                    <span>Name: {{ participant.name }}</span>
+                    <span class="mx-2">Studio: {{ participant.studioName }}</span>
+                    <span class="text-capitalize">Type: {{ participant.type }}</span>
+                  </div>
+                </td>
+              </tr>
+              <ng-container *ngIf="requestType == 'cameraman'">
+                <tr *ngIf="requestObject.resourceName2">
+                  <td class="fw-bold py-2">ResourceName</td>
+                  <td class="ms-4 py-2">{{ requestObject.resourceName }}</td>
+                </tr>
+                <tr *ngIf="requestObject.resourceTypeName">
+                  <td class="fw-bold py-2 pe-2">ResourceType</td>
+                  <td class="ms-4 py-2">{{ requestObject.resourceTypeName }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold py-2 pe-2">Program</td>
+                  <td class="ms-4 py-2">{{ requestObject.program }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold py-2 pe-2">Camera</td>
+                  <td class="ms-4 py-2">{{ requestObject.shootTypeName }}</td>
+                </tr>
+                <tr>
+                  <td class="fw-bold py-2 pe-2">Contact Information</td>
+                  <td class="ms-4 py-2">
+                    {{ requestObject.contactInformation }}
+                  </td>
+                </tr>
+              </ng-container>
+              <tr>
+                <td class="fw-bold py-2 pe-2">Details</td>
+                <td class="ms-4 py-2">{{ requestObject.details }}</td>
+              </tr>
+              <tr *ngIf="requestObject.gshootTypeName">
+                <td class="fw-bold py-2 pe-2">ShootType</td>
+                <td class="ms-4 py-2">{{ requestObject.gshootTypeName }}</td>
+              </tr>
+              <tr *ngIf="requestObject.fileName && !fileRemoved">
+                <td class="fw-bold py-2 pe-2">Attachments</td>
+                <td class="ms-4 py-2">{{ requestObject.fileName }}</td>
+              </tr>
+            </table>
+
+            <div>
+              <h4>Time slot(s)</h4>
+              <div class="row">
+                <div class="col-md-12 pb-2" *ngFor="let rts of requestObject.requestTimeSlots">
+                  <span>{{
+                    rts.startDateTime | date : "EEEE, MMMM d, y, hh:mm:ss a"
+                    }}
+                    to {{ rts.endDateTime | date : "MMMM d, hh:mm:ss a" }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="stepper-actions pt-3 text-center">
+            <button class="btn btn-outline-secondary mx-2 btn-lg" (click)="callPrevious()">
+              <span class="mx-3"> Previous </span>
+            </button>
+            <button class="btn btn-primary btn-lg" (click)="updateRequest()">
+              <span class="mx-3"> Submit </span>
+            </button>
+          </div>
+        </div>
+      </cdk-step>
+    </ng-stepper>
+  </div>
+</div>
+
+<ng-template #requestCard let-req>
+  <span *ngIf="req.showBefore" class="before"></span>
+  <div *ngIf="req.showDate" class="date">{{ req.dateText }}</div>
+  <div class="content bg-main-color live-card border m-auto d-block p-3 position-relative mb-2">
+    <h3 class="text-capitalize">{{ req.requestType }}</h3>
+
+    <!-- Request by -->
+    <ng-container *ngIf="req.name">
+      <p>
+        By: <span>{{ req.name }}</span>
+      </p>
+    </ng-container>
+
+    <p>
+      <strong>Date: {{ req.requestDateTime | date }}</strong>
+    </p>
+    <p class="mb-md-2">
+      <strong>From: {{ req.dateRange }}</strong>
+    </p>
+
+    <!-- request Channel -->
+    <ng-container *ngIf="req.channel">
+      <p>
+        Channel:
+        <span>{{ req.channel?.name }}</span>
+      </p>
+    </ng-container>
+
+    <ng-container *ngIf="req.participants">
+      <div *ngFor="let participant of req.participants">
+        <p class="text-capitalize">
+          {{ participant.type }}:
+          <span>{{ participant.name }}</span>
+        </p>
+      </div>
+    </ng-container>
+
+    <p class="mb-md-3 mt-md-2">
+      <strong>{{ req.interval }}</strong>
+    </p>
+    <div class="request-status end-0 m-3 position-absolute top-0">
+      <span class="badge bg-success bg-gradient">{{ req.status }}</span>
+    </div>
+    <p>{{ req.details }}</p>
+    <div class="view-request bg-white rounded-pill bottom-0 end-0 m-3 position-absolute">
+      <span class="badge rounded" role="button" (click)="viewRequestDetails(req._id)">
+        <i class="bi bi-eye-fill text-black"></i>
+      </span>
+    </div>
+  </div>
+  <span *ngIf="req.showAfter" class="after"></span>
+</ng-template>
+
+<ng-template #scheduleCard let-sch>
+  <div class="bg-main-color live-card border m-auto d-block p-3 rounded position-relative mb-2">
+    <h3 class="text-capitalize">{{ sch.resourceId?.name }}</h3>
+    <strong>Type: <span>{{ sch.type?.name }}</span></strong>
+    <p>
+      By: <span>{{ sch.userId?.name }}</span>
+    </p>
+    <p>
+      <strong>Date: {{ sch.date | date }}</strong>
+    </p>
+    <p class="mb-md-2">
+      <strong>From: {{ sch.dateRange }}</strong>
+    </p>
+    <p>Details: {{ sch.details }}</p>
+  </div>
+</ng-template>
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>

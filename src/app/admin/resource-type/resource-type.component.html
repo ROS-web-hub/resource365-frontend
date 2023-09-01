@@ -1,0 +1,241 @@
+<section>
+  <div class="card">
+    <div class="card-body p-5">
+      <div class="row my-3">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+          <div class="d-flex gap-2 align-items-center">
+            <span class="fs-3">Resource Types</span>
+            <a class="btn float-end" (click)="addRecord()">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                fill="green"
+                class="bi bi-plus-square-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"
+                />
+              </svg>
+            </a>
+          </div>
+          <div class="d-flex gap-2 align-items-center">
+            <span class="fs-3">Link More Recording Types</span>
+            <a
+              class="btn float-end"
+              (click)="linkResourceTypes2RecordingType()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                fill="green"
+                class="bi bi-plus-square-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="mtable">
+          <thead class="">
+            <tr>
+              <th scope="col">Actions</th>
+              <th scope="col">Resource Type</th>
+              <th scope="col">Recording Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of rows; index as rowIndex">
+              <td>
+                <i
+                  (click)="viewRecord(row)"
+                  class="bi bi-eye bg-info text-white me-1"
+                ></i>
+                <i
+                  (click)="editRecord(row)"
+                  class="bi bi-pencil-square bg-primary text-white me-1"
+                ></i>
+                <i
+                  (click)="deleteResourceTypeConfirm(row._id)"
+                  class="bi bi-trash3 bg-danger text-white me-1"
+                  *ngIf="!row.isUsed"
+                ></i>
+                <i
+                  class="bi bi-trash3 bg-secondary text-white me-1"
+                  *ngIf="row.isUsed"
+                ></i>
+              </td>
+              <td>
+                <strong> {{ row.name }}</strong>
+              </td>
+              <td>
+                <strong> {{ getRecordingTypes(row?._id) }}</strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <nav
+        aria-label="Page navigation example"
+        class="mt-3"
+        *ngIf="totalPages > 0"
+      >
+        <div class="row">
+          <div class="col">
+            <small class="text-muted"
+              >Showing {{ filters.page * filters.limit + 1 }} to
+              {{ filters.page * filters.limit + rows.length }} of
+              {{ totalRecords }} records</small
+            >
+          </div>
+          <div class="col">
+            <ul class="pagination justify-content-end">
+              <li
+                class="page-item"
+                [ngClass]="{ disabled: filters.page === 0 }"
+              >
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="setPage(0)"
+                  aria-label="Previous"
+                >
+                  <span aria-hidden="true">&laquo;</span>
+                </button>
+              </li>
+              <li
+                class="page-item"
+                [ngClass]="{ disabled: filters.page === 0 }"
+              >
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="setPage(filters.page - 1)"
+                  aria-label="Previous"
+                >
+                  <span aria-hidden="true">&lt;</span>
+                </button>
+              </li>
+              <li
+                class="page-item"
+                *ngFor="let page of pageList"
+                [ngClass]="{ active: filters.page === page }"
+              >
+                <button type="button" class="page-link" (click)="setPage(page)">
+                  {{ page + 1 }}
+                </button>
+              </li>
+              <li
+                [ngClass]="{ disabled: filters.page === totalPages - 1 }"
+                class="page-item"
+              >
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="setPage(filters.page + 1)"
+                >
+                  <span aria-hidden="true">&gt;</span>
+                </button>
+              </li>
+              <li
+                class="page-item"
+                [ngClass]="{ disabled: filters.page === totalPages - 1 }"
+              >
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="setPage(totalPages)"
+                  aria-label="Next"
+                >
+                  <span aria-hidden="true">&raquo;</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</section>
+
+<ng-template #linkFormModal let-modal4>
+  <div class="modal-content">
+    <div class="modal-body">
+      <form [formGroup]="linkForm" (ngSubmit)="onSubmit()" id="newForm">
+        <div class="d-flex mb-3 flex-column gap-2">
+          <div class="flex-grow-1 bd-highlight">
+            <label id="edit_record_title" class="fs-3"
+              >Link Recording Type to Resource Types</label
+            >
+          </div>
+          <div class="w-100">
+            <div class="px-2 bd-highlight float-end">
+              <button class="btn btn-outline-primary">Save</button>
+            </div>
+            <div class="px-2 bd-highlight float-end">
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="modal4.close()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div id="editRecordModalForm" class="row g-3">
+          <div class="col-md-12 py-2">
+            <div class="form-group">
+              <label for="recordingTypes" class="form-label fw-bold"
+                >Recording Type<span class="text-danger">*</span></label
+              >
+              <ng-select
+                [items]="recordingTypes"
+                bindLabel="text"
+                bindValue="_id"
+                formControlName="recordingTypes"
+              >
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-12 py-2">
+            <div class="form-group">
+              <label for="resourceTypes" class="form-label fw-bold"
+                >Resource Type<span class="text-danger">*</span></label
+              >
+              <ng-select formControlName="resourceTypes" [multiple]="true">
+                <ng-option
+                  *ngFor="let resourceType of resourceTypes"
+                  [value]="resourceType._id"
+                  >{{ resourceType.name }}</ng-option
+                >
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #confirmModalContent let-modal>
+  <div class="modal-body">
+    <h5>Are you sure?</h5>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="deleteRecord()">
+      Delete
+    </button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close()">
+      Cancel
+    </button>
+  </div>
+</ng-template>

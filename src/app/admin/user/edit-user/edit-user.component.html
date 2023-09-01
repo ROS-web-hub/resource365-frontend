@@ -1,0 +1,50 @@
+<div class="modal-content">
+    <div class="modal-body">
+        <form [formGroup]="editForm" (ngSubmit)="onSubmit()" id="editForm">
+            <div class="d-flex mb-3">
+                <div class="flex-grow-1 bd-highlight">
+                    <label id="edit_record_title" class="fs-3">{{ data?.name }}</label>
+                    <div class="px-2 bd-highlight float-end">
+                        <button class="btn btn-outline-primary">Save</button>
+                    </div>
+                    <div class="px-2 bd-highlight float-end">
+                        <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="permissions" class="form-label">Permissions</label>
+                        <ng-select formControlName="permissions" [multiple]="true"
+                            (remove)="onRemovePermission($event)" (change)="onSelectPermission($event)">
+                            <ng-option *ngFor="let permission of allPermissions" [value]="permission.id">{{
+                                permission.name }}</ng-option>
+                        </ng-select>
+                    </div>
+                    <!-- <select id="edit_permissions" formControlName="permissions" class="form-select col-12 select2-multi" multiple="multiple">
+                        <option  *ngFor=" let permission of allPermissions" value="{{permission.id}}">{{permission.name}}</option>
+                    </select> -->
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group" >
+                        <label for="resources" class="form-label">Resource Ownership</label>
+                        <ng-select formControlName="resources" [multiple]="true">
+                            <ng-option *ngFor="let resource of allResources" [value]="resource._id" [disabled]="!enableFlag">{{ resource.name
+                                }}</ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+                <!-- <div class="col-12">
+                    <label for="resources" class="form-label">Resources Ownership</label>
+                    <select id="edit_resources" formControlName="resources" class="form-select col-12 select2-multi" multiple="multiple">
+                        {{#each resources }}
+                            <option value="{{_id}}">{{name}}</option>
+                        {{/each}}
+                    </select>
+                </div> -->
+            </div>
+        </form>
+    </div>
+</div>

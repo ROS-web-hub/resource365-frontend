@@ -1,0 +1,127 @@
+<section>
+  <div class="card">
+    <div class="card-body p-5">
+      <div class="row my-3">
+        <div class="col-12 d-flex justify-content-between">
+          <span class="fs-3">Users</span>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="mtable">
+          <thead class="">
+            <tr>
+              <th scope="col">Actions</th>
+              <th scope="col">Name</th>
+              <th scope="col">Username</th>
+              <th scope="col">Permissions</th>
+              <th scope="col">Resource Ownership</th>
+              <th scope="col">Last Login</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of rows; index as rowIndex">
+              <td>
+                <div class="d-flex">
+                  <i
+                    (click)="viewRecord(row)"
+                    class="bi bi-eye bg-info text-white me-1"
+                  ></i>
+                  <i
+                    (click)="editRecord(row)"
+                    class="bi bi-pencil-square bg-primary text-white me-1"
+                  ></i>
+                </div>
+              </td>
+              <td>
+                <strong>{{ row.name }}</strong>
+              </td>
+              <td>{{ row.username }}</td>
+              <td>{{ row?.permissions.join(", ") }}</td>
+              <td>{{ getUserOwnedResources(rowIndex).join(", ") }}</td>
+              <td>{{ moment(row.updatedAt).format("DD/MM/YYYY hh:mm A") }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <nav
+        aria-label="Page navigation example"
+        class="mt-3"
+        *ngIf="totalPages > 0"
+      >
+        <div class="row">
+          <div class="col">
+            <small class="text-muted"
+              >Showing {{ filters.page * filters.limit + 1 }} to
+              {{ filters.page * filters.limit + rows.length }} of
+              {{ totalRecords }} records</small
+            >
+          </div>
+          <div class="col">
+            <ul class="pagination justify-content-end">
+              <li
+                class="page-item"
+                [ngClass]="{ disabled: filters.page === 0 }"
+              >
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="setPage(0)"
+                  aria-label="Previous"
+                >
+                  <span aria-hidden="true">&laquo;</span>
+                </button>
+              </li>
+              <li
+                class="page-item"
+                [ngClass]="{ disabled: filters.page === 0 }"
+              >
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="setPage(filters.page - 1)"
+                  aria-label="Previous"
+                >
+                  <span aria-hidden="true">&lt;</span>
+                </button>
+              </li>
+              <li
+                class="page-item"
+                *ngFor="let page of pageList"
+                [ngClass]="{ active: filters.page === page }"
+              >
+                <button type="button" class="page-link" (click)="setPage(page)">
+                  {{ page + 1 }}
+                </button>
+              </li>
+              <li
+                [ngClass]="{ disabled: filters.page === totalPages - 1 }"
+                class="page-item"
+              >
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="setPage(filters.page + 1)"
+                >
+                  <span aria-hidden="true">&gt;</span>
+                </button>
+              </li>
+              <li
+                class="page-item"
+                [ngClass]="{ disabled: filters.page === totalPages - 1 }"
+              >
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="setPage(totalPages)"
+                  aria-label="Next"
+                >
+                  <span aria-hidden="true">&raquo;</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</section>
